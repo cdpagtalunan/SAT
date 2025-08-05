@@ -1,0 +1,20 @@
+<?php
+namespace App\Solid\Repositories;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+
+/**
+ * Import Interfaces
+ */
+use App\Solid\Repositories\Interfaces\{{ RepositoryInterface }};
+
+/**
+ * Import Models
+ */
+use App\Models\YourModel;
+
+class {{ RepositoryName }} implements {{ RepositoryInterface }}
+{
+    //
+}

@@ -1,0 +1,20 @@
+<?php
+namespace App\Solid\Services;
+use App\Solid\Services\Interfaces\{{ serviceInterface }};
+// Service implements the ServiceInterface, responsible for saving users.
+class {{ ServiceName }} implements {{ serviceInterface }}
+{
+    /*
+    private YourRepositoryInterface $yourRepository;
+
+    public function __construct(YourRepositoryInterface $yourRepository)
+    {
+        $this->yourRepository = $yourRepository;
+    }
+    */
+
+    public function yourFunction()
+    {
+        // Business logic.
+    }
+}
