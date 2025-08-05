@@ -15,21 +15,24 @@ use App\Http\Controllers\DropdownController;
 | contains the "web" middleware group. Now create something great!
 |
 */
-Route::get('/', function () {
-    return view('home');
-})->name('home');
 
-Route::get('/sat', function () {
-    return view('SAT');
-})->name('sat');
+Route::middleware('verifySession')->group(function(){
+    Route::get('/', function () {
+        return view('home');
+    })->name('home');
 
-Route::get('/dropdown_maintenance', function () {
-    return view('dropdown_maintenance');
-})->name('dropdown_maintenance');
+    Route::get('/sat', function () {
+        return view('SAT');
+    })->name('sat');
 
-Route::controller(DropdownController::class)->group(function(){
-    Route::get('/get_dropdown_list', 'getDropdownList')->name('get_dropdown_list');
-    Route::get('/dt_get_dropdown_items', 'dtGetDropdownItems')->name('dt_get_dropdown_items');
-    Route::post('/save_dropdown_item', 'saveDropdownItem')->name('save_dropdown_item');
-    Route::post('/delete_dropdown_item', 'deleteDropdownItem')->name('delete_dropdown_item');
+    Route::get('/dropdown_maintenance', function () {
+        return view('dropdown_maintenance');
+    })->name('dropdown_maintenance');
+
+    Route::controller(DropdownController::class)->group(function(){
+        Route::get('/get_dropdown_list', 'getDropdownList')->name('get_dropdown_list');
+        Route::get('/dt_get_dropdown_items', 'dtGetDropdownItems')->name('dt_get_dropdown_items');
+        Route::post('/save_dropdown_item', 'saveDropdownItem')->name('save_dropdown_item');
+        Route::post('/delete_dropdown_item', 'deleteDropdownItem')->name('delete_dropdown_item');
+    });
 });

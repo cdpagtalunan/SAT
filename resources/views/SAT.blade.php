@@ -2,6 +2,8 @@
 
 @section('title', 'SAT')
 @section('content_page')
+@php
+@endphp
 <div class="content-wrapper">
     <section class="content-header">
         <div class="container-fluid">

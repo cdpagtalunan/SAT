@@ -22,7 +22,7 @@ class VerifySession
             $moduleIds = array_map(function($access) {
                 return $access['module_id'];
             }, $_SESSION['rapidx_user_accesses']);
-            if(!in_array(45, $moduleIds)){
+            if(!in_array(47, $moduleIds)){
                 if ($request->expectsJson()) {
                     return response()->json(['message' => 'Unauthorized'], 401);
                 }
