@@ -1,3 +1,8 @@
+$('.select2bs5').select2({
+    // width: 'style',
+    theme: 'bootstrap-5'
+});
+
 const modalCloseResetForm = (formId, modal) => {
     formId.reset();
     console.log(`modal ${modal} closed`);

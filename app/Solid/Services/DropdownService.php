@@ -9,6 +9,7 @@ use App\Solid\Repositories\Interfaces\DropdownRepositoryInterface;
 use App\Solid\Repositories\Interfaces\AssemblyLineRepositoryInterface;
 use App\Solid\Repositories\Interfaces\OperationLineRepositoryInterface;
 
+date_default_timezone_set('Asia/Manila');
 class DropdownService implements DropdownServiceInterface
 {
     
@@ -112,6 +113,27 @@ class DropdownService implements DropdownServiceInterface
             DB::rollback();
             return $e;
         }
+    }
+    /**
+     * Retrieves dropdown data for multiple repositories dynamically.
+     * 
+     * @param array $data ['arrayParam' => [repository base names]]
+     *        Example: ['arrayParam' => ['operationLine', 'assemblyLine']]
+     *        Each value will be appended with 'Repository' to match the property name.
+     * @return array Associative array with repository base names as keys and their data as values.
+     */
+    public function getDropdownSAT(array $data){
+        $conditions = array(
+            'deleted_at' => null,
+        );
+        $result = array();
+        foreach ($data['arrayParam'] as $key => $value) {
+            $repositoryName = "{$value}Repository";
+            $repository = $this->$repositoryName->get($conditions);
+            $result[$value] = $repository;
+        }
+
+        return $result;
     }
 
 }

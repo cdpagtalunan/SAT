@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\SATController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\DropdownController;
 
@@ -34,5 +35,10 @@ Route::middleware('verifySession')->group(function(){
         Route::get('/dt_get_dropdown_items', 'dtGetDropdownItems')->name('dt_get_dropdown_items');
         Route::post('/save_dropdown_item', 'saveDropdownItem')->name('save_dropdown_item');
         Route::post('/delete_dropdown_item', 'deleteDropdownItem')->name('delete_dropdown_item');
+    });
+
+    Route::controller(SATController::class)->group(function(){
+        Route::get('/get_dropdown_data', 'getDropdownData')->name('get_dropdown_data');
+        Route::post('/save_sat', 'saveSAT')->name('save_sat');
     });
 });

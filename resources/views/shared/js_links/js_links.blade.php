@@ -48,4 +48,5 @@
 </script>
 
 <script src="@php echo asset("public/js/main/common.js?".date("YmdHis")) @endphp"></script>
+<script src="@php echo asset("public/js/main/sat.js?".date("YmdHis")) @endphp"></script>
 
