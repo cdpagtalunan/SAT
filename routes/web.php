@@ -40,5 +40,7 @@ Route::middleware('verifySession')->group(function(){
     Route::controller(SATController::class)->group(function(){
         Route::get('/get_dropdown_data', 'getDropdownData')->name('get_dropdown_data');
         Route::post('/save_sat', 'saveSAT')->name('save_sat');
+        Route::get('/dt_get_sat', 'dtGetSat')->name('dt_get_sat');
+        Route::get('/get_sat_by_id', 'getSatById')->name('get_sat_by_id');
     });
 });

@@ -16,4 +16,8 @@ class SATProcessRepository implements SATProcessRepositoryInterface
     public function insert(array $data){
         return SatProcess::insert($data);
     }
+
+    public function delete(array $conditions){
+        return SatProcess::whereConditions($conditions)->delete();
+    }
 }

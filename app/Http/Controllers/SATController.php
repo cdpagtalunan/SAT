@@ -28,4 +28,12 @@ class SATController extends Controller
         $data = $request->filterParameters();
         return $this->satService->saveSAT($data);
     }
+
+    public function dtGetSat(Request $request){
+        return $this->satService->dtGetSat();
+    }
+
+    public function getSatById(Request $request){
+        return $this->satService->getSatDetails($request->id);
+    }
 }

@@ -40,7 +40,11 @@
                                 <thead>
                                     <tr>
                                         <th>Action</th>
-                                        <th>ID</th>
+                                        <th>Device Name</th>
+                                        <th>Operations Line</th>
+                                        <th>Assembly Line</th>
+                                        <th>QSAT</th>
+                                        <th>No. of Pins</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -53,7 +57,7 @@
 </div>
 
 <div class="modal fade" id="modalAddDataSAT" data-bs-backdrop="static" data-bs-formid="" tabindex="-1" role="dialog" aria-labelledby="">
-    <div class="modal-dialog modal-xl" role="document">
+    <div class="modal-dialog modal-xl-custom" role="document">
         <div class="modal-content">
             <div class="modal-header">
                 <h3 class="modal-title"><i class="fas fa-info-circle fa-sm"></i> Add SAT</h3>
@@ -66,22 +70,28 @@
                 <input type="hidden" id="txtSATId" name="sat_id">
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text">Device Name</span>
                                 <input type="text" class="form-control" id="txtDeviceName" name="device_name" required>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text">Operations Line</span>
                                 <select name="operation_line" id="operationLine" class="form-control select2bs5" required></select>
                             </div>
                         </div>
-                        <div class="col-md-4">
+                        <div class="col-md-3">
                             <div class="input-group">
                                 <span class="input-group-text">Assembly Line</span>
                                 <select name="assembly_line" id="assemblyLine" class="form-control select2bs5" required></select>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-text">No. of Pins</span>
+                                <input type="number" min="0" class="form-control" id="txtNoPins" name="no_of_pins" required>
                             </div>
                         </div>
                     </div>
@@ -156,8 +166,8 @@
                         </button>`;
                     },
                 },
-                { "data": "data1" },
-                { "data": "data2" },
+                { "data": "process_name" },
+                { "data": "allowance" },
             ],
             "columnDefs": [
                 {
@@ -178,32 +188,33 @@
             ]
         })
 
-        // $("#tableSAT").DataTable({
-        //     "processing" : true,
-        //     "serverSide" : true,
-        //     "ajax" : {
-        //         // url: "view_first_stamp_prod",
-        //         //  data: function (param){
-        //         //     param.po = $("#id").val();
-        //         // }
-        //     },
-        //     fixedHeader: true,
-        //     "columns":[
-        //         { "data" : "action", orderable:false, searchable:false },
-        //         { "data" : "label" },
-        //     ],
-        //     // "columnDefs": [
-        //     //     {"className": "dt-center", "targets": "_all"},
-        //     //     {
-        //     //         "targets": [7],
-        //     //         "data": null,
-        //     //         "defaultContent": "---"
-        //     //     },
-        //     // ],
-        //     // 'drawCallback': function( settings ) {
-        //     //     let dtApi = this.api();
-        //     // }
-        // });//end of dataTableDevices
+        $("#tableSAT").DataTable({
+            "processing" : true,
+            "serverSide" : true,
+            "ajax" : {
+                url: "{{ route('dt_get_sat') }}",
+            },
+            fixedHeader: true,
+            "columns":[
+                { "data" : "actions", orderable:false, searchable:false },
+                { "data" : "device_name" },
+                { "data" : "operation_line" },
+                { "data" : "assembly_line" },
+                { "data" : "id" },
+                { "data" : "no_of_pins" },
+            ],
+            // "columnDefs": [
+            //     {"className": "dt-center", "targets": "_all"},
+            //     {
+            //         "targets": [7],
+            //         "data": null,
+            //         "defaultContent": "---"
+            //     },
+            // ],
+            // 'drawCallback': function( settings ) {
+            //     let dtApi = this.api();
+            // }
+        });//end of dataTableDevices
 
         $('#btnAddDataForSAT').on('click', function(){
             $('#modalAddDataSAT').modal('show');
@@ -213,10 +224,10 @@
             e.preventDefault();
             let data = {
                 data: "",
-                data1: "*",
-                data2 : "*",
+                process_name: "*",
+                allowance : "*",
             }
-	        arrayProcess.push(data);
+	        // arrayProcess.push(data);
             dtProcessLists.rows.add([data]).draw();
         });
         // Placeholder removal / restore
@@ -306,6 +317,30 @@
             $('#operationLine').val('').trigger('change');
             $('#assemblyLine').val('').trigger('change');
             modalCloseResetForm($('#formDataSAT')[0], 'modalAddDataSAT');
+        });
+    });
+
+    $(document).on('click', '.btnEditSAT', function(){
+        let satId = $(this).data('id');
+        $.ajax({
+            type: "GET",
+            url: "{{ route('get_sat_by_id') }}",
+            data: {
+                id: satId
+            },
+            dataType: "json",
+            success: function (response) {
+                $('#txtSATId').val(response.id)
+                $('#txtDeviceName').val(response.device_name);
+                $('#operationLine').val(response.operation_line).trigger('change');
+                $('#assemblyLine').val(response.assembly_line).trigger('change');
+                $('#txtNoPins').val(response.no_of_pins);
+                // console.log(response.sat_process_details);
+                
+                dtProcessLists.rows.add(response.sat_process_details).draw();
+
+                $('#modalAddDataSAT').modal('show');
+            }
         });
     });
 

@@ -23,4 +23,10 @@ class SatProcess extends Model
     public function satHeader(){
         return $this->belongsTo(SatHeader::class, 'sat_header_id');
     }
+
+    public function scopeWhereConditions($query, $conditions){
+        foreach ($conditions as $key => $value) {
+            $query->where($key, $value);
+        }
+    }
 }
