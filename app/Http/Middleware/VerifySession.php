@@ -27,6 +27,7 @@ class VerifySession
                     return response()->json(['message' => 'Unauthorized'], 401);
                 }
                 // Otherwise, do a normal redirect
+                session()->flush();
                 return redirect('../');
             }
         }
@@ -34,9 +35,12 @@ class VerifySession
             if ($request->expectsJson()) {
                 return response()->json(['message' => 'Unauthorized'], 401);
             }
+            session()->flush();
             // Otherwise, do a normal redirect
             return redirect('../');
         }
+
+        $request->session()->put('rapidx_id', $_SESSION['rapidx_user_id']);
         return $next($request);
     }
 }
