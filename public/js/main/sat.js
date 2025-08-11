@@ -43,6 +43,7 @@ const saveDataSAT = (data) => {
             }
 
             toastr.success(response.msg);
+            dtSat.draw();
             $('#btnSaveDataSAT').prop('disabled', false);
             $('#modalAddDataSAT').modal('hide');
         },

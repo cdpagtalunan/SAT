@@ -138,7 +138,7 @@
 @endsection
 @section('js_content')
 <script>
-    let dtProcessLists;
+    let dtProcessLists, dtSat;
     $(document).ready(function () {
         // Calls the function to fetch dropdown data for Assembly Line and Operation Line when the page loads.
         // The data will be used to populate the corresponding select elements in the modal form.
@@ -188,7 +188,7 @@
             ]
         })
 
-        $("#tableSAT").DataTable({
+        dtSat = $("#tableSAT").DataTable({
             "processing" : true,
             "serverSide" : true,
             "ajax" : {
@@ -342,6 +342,48 @@
                 $('#modalAddDataSAT').modal('show');
             }
         });
+    });
+
+    $(document).on('click', '.btnProceedObs', function(){
+        let satId = $(this).data('id');
+        Swal.fire({
+            title: "Do you want to proceed to observation?",
+            text: "Editing the data will be disabled.",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: "Save",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                  $.ajax({
+                      type: "POST",
+                      url: "{{ route('proceed_obs') }}",
+                      data: {
+                          _token: "{{ csrf_token() }}",
+                          id: satId
+                      },
+                      dataType: "json",
+                      beforeSend: function () {
+                          $(this).prop('disabled', true);
+                      },
+                      success: function (response) {
+                          if (!response.result) {
+                              toastr.error('Proceed failed! Please try again.')
+                              return;
+                          }
+                          dtSat.draw();
+                          toastr.success(response.msg);
+                          $(this).prop('disabled', false);
+
+                      },
+                      error: function (xhr, status, error) {
+                          $(this).prop('disabled', false);
+                          console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
+                      }
+                  });
+            }
+        });
+      
     });
 
 

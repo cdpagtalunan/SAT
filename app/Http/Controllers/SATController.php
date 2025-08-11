@@ -36,4 +36,8 @@ class SATController extends Controller
     public function getSatById(Request $request){
         return $this->satService->getSatDetails($request->id);
     }
+
+    public function proceedObs(Request $request){
+        return $this->satService->proceedObs($request->id);
+    }
 }

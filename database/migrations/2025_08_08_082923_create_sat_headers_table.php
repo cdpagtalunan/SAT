@@ -15,6 +15,7 @@ class CreateSatHeadersTable extends Migration
     {
         Schema::create('sat_headers', function (Blueprint $table) {
             $table->id();
+            $table->smallInteger('status')->default(0);
             $table->string('device_name');
             $table->string('operation_line');
             $table->string('assembly_line');

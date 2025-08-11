@@ -42,5 +42,6 @@ Route::middleware('verifySession')->group(function(){
         Route::post('/save_sat', 'saveSAT')->name('save_sat');
         Route::get('/dt_get_sat', 'dtGetSat')->name('dt_get_sat');
         Route::get('/get_sat_by_id', 'getSatById')->name('get_sat_by_id');
+        Route::post('/proceed_obs', 'proceedObs')->name('proceed_obs');
     });
 });
