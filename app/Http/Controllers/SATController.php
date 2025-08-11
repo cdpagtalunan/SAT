@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\SATRequest;
 use App\Solid\Services\SATService;
 use App\Solid\Services\DropdownService;
 
@@ -23,7 +24,8 @@ class SATController extends Controller
         return $this->dropdownService->getDropdownSAT($request->all());
     }
 
-    public function saveSAT(Request $request){
-        return $this->satService->saveSAT($request->all());
+    public function saveSAT(SATRequest $request){
+        $data = $request->filterParameters();
+        return $this->satService->saveSAT($data);
     }
 }

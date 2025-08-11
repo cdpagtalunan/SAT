@@ -34,10 +34,24 @@ const saveDataSAT = (data) => {
         data: data,
         dataType: "json",
         beforeSend: function(){
+            $('#btnSaveDataSAT').prop('disabled', true);
         },
         success: function (response) {
+            if(!response.result){
+                toastr.error('Saving Failed. Please try again.');
+                return;
+            }
+
+            toastr.success(response.msg);
+            $('#btnSaveDataSAT').prop('disabled', false);
+            $('#modalAddDataSAT').modal('hide');
         },
         error: function(xhr, status, error){
+            // console.log(xhr.status);
+            if(xhr.status == 422){
+                handleValidatorErrors(xhr.responseJSON.errors)
+            }
+            $('#btnSaveDataSAT').prop('disabled', false);
             console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
         }
     });

@@ -62,24 +62,26 @@
                 </button>
             </div>
             <form id="formDataSAT">
+                @csrf
+                <input type="hidden" id="txtSATId" name="sat_id">
                 <div class="modal-body">
                     <div class="row mb-3">
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text">Device Name</span>
-                                <input type="text" class="form-control" id="">
+                                <input type="text" class="form-control" id="txtDeviceName" name="device_name" required>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text">Operations Line</span>
-                                <select name="operation_line" id="operationLine" class="form-control select2bs5"></select>
+                                <select name="operation_line" id="operationLine" class="form-control select2bs5" required></select>
                             </div>
                         </div>
                         <div class="col-md-4">
                             <div class="input-group">
                                 <span class="input-group-text">Assembly Line</span>
-                                <select name="assembly_line" id="assemblyLine" class="form-control select2bs5"></select>
+                                <select name="assembly_line" id="assemblyLine" class="form-control select2bs5" required></select>
                             </div>
                         </div>
                     </div>
@@ -261,13 +263,11 @@
 
         $('#btnSaveDataSAT').on('click', function(e){
             e.preventDefault();
-            let data = {
-                device_name: $('#deviceName').val(),
-                operation_line: $('#operationLine').val(),
-                assembly_line: $('#assemblyLine').val(),
-                _token: '{{ csrf_token() }}',
-                process_list: []
-            };
+            $('#formDataSAT').submit();
+        })
+         $('#formDataSAT').on('submit', function(e){
+            e.preventDefault();
+            let process_list = [];
             let error = false;
             dtProcessLists.rows().every(function(rowIdx, tableLoop, rowLoop){
                 let rowNode = this.node();
@@ -288,20 +288,27 @@
                 }
 
                 // Example: push the HTML into your data object
-                data.process_list.push({
-                    process: processCellHtml,
+                process_list.push({
+                    process_name: processCellHtml,
                     allowance: allowanceCellHtml
                 });
             });
 
             // Call the save function here with the data object
-            console.log('btnSaveDataSAT', data);
             if(!error) {
+                let data = $.param({'process_list': process_list}) + "&" + $(this).serialize();
                 saveDataSAT(data);
             }
         })
 
-        
+        $('#modalAddDataSAT').on('hidden.bs.modal', function(){
+            dtProcessLists.clear().draw();
+            $('#operationLine').val('').trigger('change');
+            $('#assemblyLine').val('').trigger('change');
+            modalCloseResetForm($('#formDataSAT')[0], 'modalAddDataSAT');
+        });
     });
+
+
 </script>
 @endsection
