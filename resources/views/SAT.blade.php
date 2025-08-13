@@ -56,7 +56,7 @@
     </section>
 </div>
 
-<div class="modal fade" id="modalAddDataSAT" data-bs-backdrop="static" data-bs-formid="" tabindex="-1" role="dialog" aria-labelledby="">
+<div class="modal fade" id="modalDataSAT" data-bs-backdrop="static" data-bs-formid="" tabindex="-1" role="dialog" aria-labelledby="">
     <div class="modal-dialog modal-xl-custom" role="document">
         <div class="modal-content">
             <div class="modal-header">
@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <hr>
-                    <div class="row">
+                    <div class="row" id="addingSATProcessList">
                         <div class="col-sm-12">
                             <div class="card"> 
                                <div class="card-header d-flex">
@@ -125,6 +125,42 @@
                             </div>
                         </div>
                     </div>
+
+                    <div class="row" id="obsSAT">
+                        <div class="col-sm-12">
+                            <div class="card"> 
+                               <div class="card-header">
+                                    Process List
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-bordered table-hover table-sm w-100" id="tableSATObservation">
+                                            <thead>
+                                                <tr>
+                                                    <th rowspan="2">Action</th>
+                                                    <th rowspan="2">Process</th>
+                                                    <th rowspan="2">Operator</th>
+                                                    <th colspan="5" class="text-center">Observation (sec. per cycle-unit)</th>
+                                                    <th rowspan="2">Observed Time (secs.)</th>
+                                                    <th rowspan="2">Allowance Factor (%)</th>
+                                                    <th rowspan="2">Normal Time (secs.)</th>
+                                                    <th rowspan="2">Standard Time (secs.)</th>
+                                                    <th rowspan="2">UPH</th>
+                                                </tr>
+                                                <tr class="text-center">
+                                                    <th>1</th>
+                                                    <th>2</th>
+                                                    <th>3</th>
+                                                    <th>4</th>
+                                                    <th>5</th>
+                                                </tr>
+                                            </thead>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
                 <div class="modal-footer justify-content-between">
                     <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
@@ -135,10 +171,35 @@
     </div>
 </div>
 
+{{-- <div class="modal fade" id="modalAddProcessObs" data-backdrop="static" data-formid="" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+    <div class="modal-dialog modal-lg" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h3 class="modal-title"><i class="fas fa-info-circle fa-sm"></i> Observation</h3>
+                <button id="close" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <form id="formProcessObs">
+                <input type="text" id="txtProcessId" name="process_id">
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label>Operator</label>
+                    </div>
+                </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div> --}}
+
 @endsection
 @section('js_content')
 <script>
-    let dtProcessLists, dtSat;
+    let dtProcessLists, dtSat, dtSatObservation;
     $(document).ready(function () {
         // Calls the function to fetch dropdown data for Assembly Line and Operation Line when the page loads.
         // The data will be used to populate the corresponding select elements in the modal form.
@@ -214,110 +275,8 @@
             // 'drawCallback': function( settings ) {
             //     let dtApi = this.api();
             // }
-        });//end of dataTableDevices
-
-        $('#btnAddDataForSAT').on('click', function(){
-            $('#modalAddDataSAT').modal('show');
-        });
-
-        $('#btnAddProcessList').on('click', function(e){
-            e.preventDefault();
-            let data = {
-                data: "",
-                process_name: "*",
-                allowance : "*",
-            }
-	        // arrayProcess.push(data);
-            dtProcessLists.rows.add([data]).draw();
-        });
-        // Placeholder removal / restore
-        $('#tableProcessLists').on('focus', '[contenteditable="true"]', function () {
-            if ($(this).hasClass('placeholder-cell')) {
-                $(this).text('').removeClass('placeholder-cell');
-            }
-        });
-
-        /**
-         * Handles validation and placeholder logic for editable cells in the Allowance column.
-         * - On blur, checks if the value is empty or not a valid number.
-         * - Shows an error using Swal if the input is invalid.
-         * - Restores the placeholder text and style if the cell is left empty.
-         */
-        $('#tableProcessLists').on('blur', '[contenteditable="true"]', function () {
-            var cell = dtProcessLists.cell(this);
-            var columnIndex = cell.index().column;
-            // Allowance column index (0-based) is 2
-            if (columnIndex === 2) {
-                var value = $(this).text().trim();
-                if(value === ''){
-                    console.log('data is empty');
-                }
-                // Validate float
-                else if ( isNaN(value) || !/^\d+(\.\d+)?$/.test(value)) {
-                    // alert('Please enter a valid percentage (numbers only)');
-                    Swal.fire({
-                        // title: "The Internet?",
-                        text: "Please enter a valid percentage (numbers only)",
-                        icon: "error"
-                    });
-                    console.log('Please enter a valid percentage (numbers only)');
-                    $(this).text('Enter value').addClass('placeholder-cell');
-                    return;
-                }
-            }
-
-            // Restore placeholder if empty
-            if ($(this).text().trim() === '') {
-                $(this).addClass('placeholder-cell').text('Enter value');
-            }
-        });
-
-        $('#btnSaveDataSAT').on('click', function(e){
-            e.preventDefault();
-            $('#formDataSAT').submit();
-        })
-         $('#formDataSAT').on('submit', function(e){
-            e.preventDefault();
-            let process_list = [];
-            let error = false;
-            dtProcessLists.rows().every(function(rowIdx, tableLoop, rowLoop){
-                let rowNode = this.node();
-                // Get the HTML of the "Process" cell (column index 1)
-                let processCellHtml = $(rowNode).find('td').eq(1).html();
-                // Get the HTML of the "Allowance" cell (column index 2)
-                let allowanceCellHtml = $(rowNode).find('td').eq(2).html();
-
-                if(processCellHtml === '' || processCellHtml === 'Enter value') {
-                    // If the process cell is empty, skip this row
-                    swal.fire({
-                        title: "Error",
-                        text: "Please fill in all required fields.",
-                        icon: "error"
-                    });
-                    error = true;
-                    return;
-                }
-
-                // Example: push the HTML into your data object
-                process_list.push({
-                    process_name: processCellHtml,
-                    allowance: allowanceCellHtml
-                });
-            });
-
-            // Call the save function here with the data object
-            if(!error) {
-                let data = $.param({'process_list': process_list}) + "&" + $(this).serialize();
-                saveDataSAT(data);
-            }
-        })
-
-        $('#modalAddDataSAT').on('hidden.bs.modal', function(){
-            dtProcessLists.clear().draw();
-            $('#operationLine').val('').trigger('change');
-            $('#assemblyLine').val('').trigger('change');
-            modalCloseResetForm($('#formDataSAT')[0], 'modalAddDataSAT');
-        });
+        });//end
+        
     });
 
     $(document).on('click', '.btnEditSAT', function(){
@@ -338,8 +297,8 @@
                 // console.log(response.sat_process_details);
                 
                 dtProcessLists.rows.add(response.sat_process_details).draw();
-
-                $('#modalAddDataSAT').modal('show');
+                addingSAT();
+                $('#modalDataSAT').modal('show');
             }
         });
     });
@@ -383,9 +342,30 @@
                   });
             }
         });
-      
     });
 
+    $(document).on('click', '.btnAddObs', function(){
+        let satId = $(this).data('id');
+        $.ajax({
+            type: "GET",
+            url: "{{ route('get_sat_by_id') }}",
+            data: {
+                id: satId
+            },
+            dataType: "json",
+            success: function (response) {
+                $('#txtSATId').val(response.id)
+                $('#txtDeviceName').val(response.device_name);
+                $('#operationLine').val(response.operation_line).trigger('change');
+                $('#assemblyLine').val(response.assembly_line).trigger('change');
+                $('#txtNoPins').val(response.no_of_pins);
+                // console.log(response.sat_process_details);
+                obsSAT();
+                drawProcessListTableForObservation(response.id);
 
+                $('#modalDataSAT').modal('show');
+            }
+        });
+    });
 </script>
 @endsection

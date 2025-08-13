@@ -20,6 +20,10 @@ class SatProcess extends Model
         'deleted_at',
     ];
 
+    public function rapidxUserDetails(){
+        return $this->hasOne(RapidxUser::class, 'id', 'user_rapidx_id');
+    }
+
     public function satHeader(){
         return $this->belongsTo(SatHeader::class, 'sat_header_id');
     }

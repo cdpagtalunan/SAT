@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\SATRequest;
 use App\Solid\Services\SATService;
 use App\Solid\Services\DropdownService;
+use App\Http\Requests\SATProcessRequest;
 
 class SATController extends Controller
 {
@@ -39,5 +40,15 @@ class SATController extends Controller
 
     public function proceedObs(Request $request){
         return $this->satService->proceedObs($request->id);
+    }
+
+    public function dtGetProcessForObservation(Request $request){
+        return $this->satService->dtGetProcessForObservation($request->id);
+    }
+
+    public function saveProcessObs(SATProcessRequest $request){
+        $data = $request->filterParameters();
+        return $this->satService->saveSatProcessObs($data);
+
     }
 }

@@ -43,5 +43,7 @@ Route::middleware('verifySession')->group(function(){
         Route::get('/dt_get_sat', 'dtGetSat')->name('dt_get_sat');
         Route::get('/get_sat_by_id', 'getSatById')->name('get_sat_by_id');
         Route::post('/proceed_obs', 'proceedObs')->name('proceed_obs');
+        Route::get('/dt_get_process_for_observation', 'dtGetProcessForObservation')->name('dt_get_process_for_observation');
+        Route::post('/save_process_obs', 'saveProcessObs')->name('save_process_obs');
     });
 });

@@ -20,4 +20,12 @@ class SATProcessRepository implements SATProcessRepositoryInterface
     public function delete(array $conditions){
         return SatProcess::whereConditions($conditions)->delete();
     }
+
+    public function getWithRelationsConditions(array $relations, array $conditions){
+        return SatProcess::with($relations)->whereConditions($conditions)->get();
+    }
+
+    public function update(array $data, int $id){
+        return SatProcess::where('id', $id)->update($data);
+    }
 }

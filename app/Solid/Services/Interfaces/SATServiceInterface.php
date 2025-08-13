@@ -7,4 +7,6 @@ interface SATServiceInterface
     public function dtGetSat();
     public function getSatDetails(int $id);
     public function proceedObs(int $id);
+    public function dtGetProcessForObservation(int $id);
+    public function saveSatProcessObs(array $id);
 }

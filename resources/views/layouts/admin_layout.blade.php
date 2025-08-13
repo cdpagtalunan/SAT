@@ -42,5 +42,10 @@
         @yield('js_content')
        
     </body>
+    <script>
+        var token = "{{ csrf_token() }}"
+        var sessionName = "{{ $_SESSION['rapidx_name'] }}"
+        var sessionEmpNo = "{{ $_SESSION['rapidx_user_id'] }}"
+    </script>
     
 </html>

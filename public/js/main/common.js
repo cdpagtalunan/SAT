@@ -64,3 +64,24 @@ const handleValidatorErrors = (errors) => {
         }
     }
 }
+
+const addingSAT = () => {
+    $('#txtDeviceName').prop('disabled', false)
+    $('#operationLine').prop('disabled', false)
+    $('#assemblyLine').prop('disabled', false)
+    $('#txtNoPins').prop('disabled', false)
+    $('#addingSATProcessList').show();
+    $('#btnSaveDataSAT').show();
+    $('#obsSAT').hide();
+}
+
+const obsSAT = () => {
+    $('#txtDeviceName').prop('disabled', true)
+    $('#operationLine').prop('disabled', true)
+    $('#assemblyLine').prop('disabled', true)
+    $('#txtNoPins').prop('disabled', true)
+    $('#addingSATProcessList').hide();
+    $('#btnSaveDataSAT').hide();
+    $('#obsSAT').show();
+
+}

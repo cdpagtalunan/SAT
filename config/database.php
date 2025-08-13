@@ -63,26 +63,6 @@ return [
             ]) : [],
         ],
 
-        'mysql_ts_ppts' => [
-            'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST_TS_PPTS', '127.0.0.1'),
-            'port' => env('DB_PORT_TS_PPTS', '3306'),
-            'database' => env('DB_DATABASE_TS_PPTS', 'forge'),
-            'username' => env('DB_USERNAME_TS_PPTS', 'forge'),
-            'password' => env('DB_PASSWORD_TS_PPTS', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'strict' => true,
-            'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
-        ],
-
         'mysql_rapidx' => [
             'driver' => 'mysql',
             'url' => env('DATABASE_URL'),
@@ -97,26 +77,6 @@ return [
             'prefix' => '',
             'prefix_indexes' => true,
             'strict' => true,
-            'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
-        ],
-
-        'packing_list_wbs' => [
-            'driver' => 'mysql',
-            'url' => env('DATABASE_URL'),
-            'host' => env('DB_HOST_PackingList', '127.0.0.1'),
-            'port' => env('DB_PORT_PackingList', '3306'),
-            'database' => env('DB_DATABASE_PackingList', 'forge'),
-            'username' => env('DB_USERNAME_PackingList', 'forge'),
-            'password' => env('DB_PASSWORD_PackingList', ''),
-            'unix_socket' => env('DB_SOCKET', ''),
-            'charset' => 'utf8mb4',
-            'collation' => 'utf8mb4_unicode_ci',
-            'prefix' => '',
-            'prefix_indexes' => true,
-            'strict' => false,
             'engine' => null,
             'options' => extension_loaded('pdo_mysql') ? array_filter([
                 PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
