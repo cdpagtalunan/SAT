@@ -105,6 +105,7 @@ class SATService implements SATServiceInterface
                     break;
                 case 1:
                     $result .= "<button class='btn btn-sm btn-primary btnAddObs' data-id='{$data->id}'><i class='fa-solid fa-list-check'></i></button>";
+                    $result .= "<button class='btn btn-sm btn-success btnDoneObs ml-1' data-id='{$data->id}'><i class='fa-solid fa-check'></i></button>";
                 default:
                     # code...
                     break;

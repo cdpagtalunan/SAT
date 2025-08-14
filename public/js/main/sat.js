@@ -241,6 +241,12 @@ $(document).on('click', '.btnSaveProcessObs', function(e){
 
     saveProcessObs(dataToSave);
 })
+
+$(document).on('click', '.btnDoneObs', function(){
+    let satId = $(this).data('id');
+
+    console.log(satId);
+})
 /**
  * Fetches dropdown options for each specified select element via AJAX.
  * Populates each dropdown (by id) with a default "-- SELECT --" option and the items returned from the server.
@@ -359,11 +365,16 @@ const saveProcessObs = (data) => {
                 toastr.success('Successfully Saved!');
                 drawProcessListTableForObservation($('#txtSATId').val())
             }
+            else{
+                toastr.error('Something went wrong. Please call ISS!');
+
+            }
         },
         error: function(xhr, status, error){
             if(xhr.status == 422){
                 toastr.error('Observation data should contain numbers only.')
             }
+            toastr.error('Something went wrong. Please call ISS!');
             console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
         }
     });
