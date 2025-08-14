@@ -244,8 +244,51 @@ $(document).on('click', '.btnSaveProcessObs', function(e){
 
 $(document).on('click', '.btnDoneObs', function(){
     let satId = $(this).data('id');
+    Swal.fire({
+        title: "Are you sure?",
+        text: "This will proceed for Line Balance",
+        showCancelButton: true,
+        confirmButtonText: "Yes",
+        icon: 'question',
+    }).then((result) => {
+        /* Read more about isConfirmed, isDenied below */
+        if (result.isConfirmed) {
+            $.ajax({
+                type: "POST",
+                url: "done_obs",
+                data: {
+                    sat_id: satId,
+                    _token: token
+                },
+                dataType: "json",
+                beforeSend: function () {
+                    $('.btnDoneObs').prop('disabled', false);
+                },
+                success: function (response) {
+                    if (!response.result) {
+                        toastr.error('Something went wrong. Please contact ISS!');
+                        return;
+                    }
+                    toastr.success('Validation Complete!');
+                    dtSat.draw();
+                    $('.btnDoneObs').prop('disabled', false);
+                },
+                error: function (xhr, status, error) {
+                    if (xhr.status == 409) {
+                        Swal.fire({
+                            title: 'Error!',
+                            text: `${xhr.responseJSON.msg}`,
+                            icon: "error"
+                        });
+                    }
+                    $('.btnDoneObs').prop('disabled', false);
 
-    console.log(satId);
+                    console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
+                }
+            });
+        }
+    });
+    
 })
 /**
  * Fetches dropdown options for each specified select element via AJAX.
@@ -305,7 +348,6 @@ const saveDataSAT = (data) => {
         }
     });
 }
-
 
 const drawProcessListTableForObservation = (satId) => {
     dtSatObservation = $("#tableSATObservation").DataTable({

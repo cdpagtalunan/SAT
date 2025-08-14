@@ -49,6 +49,9 @@ class SATController extends Controller
     public function saveProcessObs(SATProcessRequest $request){
         $data = $request->filterParameters();
         return $this->satService->saveSatProcessObs($data);
+    }
 
+    public function doneObs(Request $request){
+        return $this->satService->doneObs($request->all());
     }
 }

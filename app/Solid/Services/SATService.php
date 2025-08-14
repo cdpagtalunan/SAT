@@ -100,12 +100,12 @@ class SATService implements SATServiceInterface
             $result .= "<center>";
             switch ($data->status) {
                 case 0:
-                    $result .= "<button class='btn btn-sm btn-primary btnEditSAT' data-id='{$data->id}'><i class='fa-solid fa-edit'></i></button>";
-                    $result .= "<button class='btn btn-sm btn-warning btnProceedObs ml-1' data-id='{$data->id}'><i class='fa-solid fa-paper-plane'></i></button>";
+                    $result .= "<button class='btn btn-sm btn-primary btnEditSAT' data-id='{$data->id}' title='Edit SAT'><i class='fa-solid fa-edit'></i></button>";
+                    $result .= "<button class='btn btn-sm btn-warning btnProceedObs ml-1' data-id='{$data->id}' title='Proceed for observation'><i class='fa-solid fa-paper-plane'></i></button>";
                     break;
                 case 1:
-                    $result .= "<button class='btn btn-sm btn-primary btnAddObs' data-id='{$data->id}'><i class='fa-solid fa-list-check'></i></button>";
-                    $result .= "<button class='btn btn-sm btn-success btnDoneObs ml-1' data-id='{$data->id}'><i class='fa-solid fa-check'></i></button>";
+                    $result .= "<button class='btn btn-sm btn-primary btnAddObs' data-id='{$data->id}' title='Add observation'><i class='fa-solid fa-list-check'></i></button>";
+                    $result .= "<button class='btn btn-sm btn-success btnDoneObs ml-1' data-id='{$data->id}' title='Proceed for line balance'><i class='fa-solid fa-check'></i></button>";
                 default:
                     # code...
                     break;
@@ -236,6 +236,41 @@ class SATService implements SATServiceInterface
             $result = $this->satProcessRepository->update($update_array, $data['id']);
             DB::commit();
 
+            return response()->json([
+                'result' => $result,
+            ]);
+        }catch(Exemption $e){
+            DB::rollback();
+            return $e;
+        }
+    }
+
+    public function doneObs(array $data){
+        DB::beginTransaction();
+        try{
+            $sat_process_relations = array();
+            $sat_process_conditions = array(
+                'sat_header_id' => $data['sat_id']
+            );
+            // $sat_header = $this->satHeaderRepository->getDetailsById($sat_header_relations, $data['sat_id']);
+            $sat_process = $this->satProcessRepository->getWithRelationsConditions($sat_process_relations, $sat_process_conditions);
+            $collection = collect($sat_process)->filter(function($process){
+                return is_null($process['obs_1']);
+            });
+            if(count($collection) != 0){
+                return response()->json([
+                    'result' => false,
+                    'msg' => "Please complete observation process"
+                ], 409);
+            }
+
+            $sat_update = array(
+                'status' => 2,
+                'validated_by' => session('rapidx_id'),
+                'validated_at' => now()
+            );
+            $result = $this->satHeaderRepository->update($sat_update, $data['sat_id']);
+            DB::commit();
             return response()->json([
                 'result' => $result,
             ]);
