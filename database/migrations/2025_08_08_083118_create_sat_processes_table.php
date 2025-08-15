@@ -24,6 +24,7 @@ class CreateSatProcessesTable extends Migration
             $table->decimal('obs_3',8,2)->nullable();
             $table->decimal('obs_4',8,2)->nullable();
             $table->decimal('obs_5',8,2)->nullable();
+            $table->decimal('lb_no_operator',8,2)->nullable();
             $table->string('created_by');
             $table->string('updated_by')->nullable();
             $table->timestamps();

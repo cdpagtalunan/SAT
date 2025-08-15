@@ -46,5 +46,6 @@ Route::middleware('verifySession')->group(function(){
         Route::get('/dt_get_process_for_observation', 'dtGetProcessForObservation')->name('dt_get_process_for_observation');
         Route::post('/save_process_obs', 'saveProcessObs')->name('save_process_obs');
         Route::post('/done_obs', 'doneObs')->name('done_obs');
+        Route::get('/dt_get_process_for_line_balance', 'dtGetProcessForLineBalance')->name('dt_get_process_for_line_balance');
     });
 });

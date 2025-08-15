@@ -171,35 +171,125 @@
     </div>
 </div>
 
-{{-- <div class="modal fade" id="modalAddProcessObs" data-backdrop="static" data-formid="" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
-    <div class="modal-dialog modal-lg" role="document">
+<div class="modal fade" id="modalLineBalance" data-bs-backdrop="static" data-bs-formid="" tabindex="-1" role="dialog" aria-labelledby="" >
+    <div class="modal-dialog modal-xl-custom" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h3 class="modal-title"><i class="fas fa-info-circle fa-sm"></i> Observation</h3>
-                <button id="close" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
+                <h3 class="modal-title"><i class="fas fa-info-circle fa-sm"></i> Line Balance</h3>
+                <button id="close" class="close" data-bs-dismiss="modal" aria-label="Close">
+                    <span >&times;</span>
                 </button>
             </div>
-            <form id="formProcessObs">
-                <input type="text" id="txtProcessId" name="process_id">
-                <div class="modal-body">
-                    <div class="form-group">
-                        <label>Operator</label>
+            <div class="modal-body">
+                <div class="row mb-2">
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-text w-50">Device Name</span>
+                            <input type="text" class="form-control" id="lbDeviceName" name="" readonly>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-text w-50">Operations Line</span>
+                            <input type="text" class="form-control" id="lbOperationLine" name="" readonly>
+
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-text w-50">Assembly Line</span>
+                            <input type="text" class="form-control" id="lbAssemblyLine" name="" readonly>
+
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="input-group">
+                            <span class="input-group-text w-50">No. of Pins</span>
+                            <input type="number" min="0" class="form-control" id="lbNoOfPins" name="" readonly>
+                        </div>
                     </div>
                 </div>
-                <div class="modal-footer justify-content-between">
-                    <button type="button" class="btn btn-sm btn-secondary" data-dismiss="modal">Close</button>
+                <hr>
+                <div class="row">
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <span class="input-group-text w-50">Assembly SAT</span>
+                            <input type="text"class="form-control" id="" name="">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <span class="input-group-text w-50">Line Balance</span>
+                            <input type="text"class="form-control" id="" name="">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <span class="input-group-text w-50">Output/hr</span>
+                            <input type="text"class="form-control" id="" name="">
+                        </div>
+                    </div>
+                    <div class="col-sm-3">
+                        <div class="input-group">
+                            <span class="input-group-text w-50">PPC Output/hr</span>
+                            <input type="text"class="form-control" id="" name="">
+                        </div>
+                    </div>
                 </div>
-            </form>
-
+                <div class="row mt-3">
+                    <div class="col-sm-12">
+                        <div class="card" id="id"> 
+                            <div class="card-header">
+                                <div class="row">
+                                    <div class="col-sm-6">
+                                        Line Balance
+                                    </div>
+                                    <div class="col-sm-6 d-flex justify-content-around">
+                                        <div>
+                                            Total Station SAT:
+                                            <label id="TtlStationSat"> 0</label>
+                                        </div>
+                                        <div>
+                                            Total No. of Operators:
+                                            <label id="ttlNoOperator"> 0</label>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="card-body">
+                                <div class="table-responsive">
+                                    <table class="table table-hover table-bordered w-100" id="tableLineBalance">
+                                        <thead>
+                                            <tr>
+                                                <th>Process</th>
+                                                <th>Station SAT</th>
+                                                <th>No. of Operators</th>
+                                                <th>TACT</th>
+                                                <th>UPH</th>
+                                            </tr>
+                                        </thead>
+                                       
+                                    </table>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer justify-content-between">
+                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="button" class="btn btn-sm btn-success" title="Save Line Balance" id="btnSaveLineBalance">Save</button>
+            </div>
         </div>
     </div>
-</div> --}}
+</div>
+
 
 @endsection
 @section('js_content')
 <script>
-    let dtProcessLists, dtSat, dtSatObservation;
+    
+    let dtProcessLists, dtSat, dtSatObservation, dtLineBalance;
     $(document).ready(function () {
         // Calls the function to fetch dropdown data for Assembly Line and Operation Line when the page loads.
         // The data will be used to populate the corresponding select elements in the modal form.

@@ -54,4 +54,8 @@ class SATController extends Controller
     public function doneObs(Request $request){
         return $this->satService->doneObs($request->all());
     }
+
+    public function dtGetProcessForLineBalance(Request $request){
+        return $this->satService->dtGetProcessForObservation($request->id);
+    }
 }

@@ -106,6 +106,10 @@ class SATService implements SATServiceInterface
                 case 1:
                     $result .= "<button class='btn btn-sm btn-primary btnAddObs' data-id='{$data->id}' title='Add observation'><i class='fa-solid fa-list-check'></i></button>";
                     $result .= "<button class='btn btn-sm btn-success btnDoneObs ml-1' data-id='{$data->id}' title='Proceed for line balance'><i class='fa-solid fa-check'></i></button>";
+                    break;
+                case 2:
+                    $result .= "<button class='btn btn-sm btn-primary btnAddLineBalance' data-id='{$data->id}' title='Add Line Balance'><i class='fa-solid fa-circle-info'></i></button>";
+                    break;
                 default:
                     # code...
                     break;
@@ -151,6 +155,7 @@ class SATService implements SATServiceInterface
         );
         $sat_processess = $this->satProcessRepository->getWithRelationsConditions($relations, $conditions);
         return DataTables::of($sat_processess)
+        ->setRowId('id')
         ->addColumn('actions', function($data){
             $result = "";
             $result .= "<center>";
@@ -214,6 +219,28 @@ class SATService implements SATServiceInterface
             $uph = 3600/$data->st;
             $round_up = round($uph, 2);
             $data->uph = $uph;
+            return $round_up;
+        })
+        ->addColumn('tact', function($data){
+            $data->tact = null;
+
+            if($data->nt === null || $data->lb_no_operator === null){
+                return $data->tact;
+            }
+
+            $tact = $data->nt / $data->lb_no_operator;
+            $round_up = round($tact, 2);
+            $data->tact = $tact;
+            return $round_up;
+        })
+        ->addColumn('lb_uph', function($data){
+            $data->lb_uph = null;
+            if($data->tact === null){
+                return $data->lb_uph;
+            }
+            $lb_uph = 3600/$data->tact;
+            $round_up = round($lb_uph, 2);
+            $data->lb_uph = $lb_uph;
             return $round_up;
         })
         ->rawColumns(['actions'])

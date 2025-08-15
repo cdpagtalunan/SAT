@@ -119,9 +119,29 @@ $(document).ready(function () {
             $(this).addClass('placeholder-cell').text('Enter value');
         }
     });
+
+    $('#btnSaveLineBalance').on('click', function(e){
+        e.preventDefault();
+        let data = [];
+        dtLineBalance.rows().every(function (rowIdx, tableLoop, rowLoop) {
+            console.log(rowIdx);
+            let rowNode = this.node();
+            console.log('rowNode', rowNode);
+            console.log('tr ID: ',$(rowNode).attr('id'));
+            console.log('no of operator: ',$(rowNode).find('td').eq(2).text());
+            data.push( {
+                'satProcessId' : $(rowNode).attr('id'),
+                'noOfOperator'  : $(rowNode).find('td').eq(2).text()
+            });
+        });
+
+        console.log('data', data);
+    })
 });
 
-
+/**
+ * *Process Observation
+ */
 $(document).on('click', '.btnAddProcessObs', function(e){
      e.preventDefault();
 
@@ -219,7 +239,7 @@ $(document).on('click', '.btnCancel', function(e){
     // Toggle button visibility
     row.find('.btnAddProcessObs').removeClass('d-none');
     row.find('#divButtonProcessObs').addClass('d-none');
-})
+});
 
 $(document).on('click', '.btnSaveProcessObs', function(e){
     e.preventDefault();
@@ -240,7 +260,7 @@ $(document).on('click', '.btnSaveProcessObs', function(e){
     });
 
     saveProcessObs(dataToSave);
-})
+});
 
 $(document).on('click', '.btnDoneObs', function(){
     let satId = $(this).data('id');
@@ -289,7 +309,40 @@ $(document).on('click', '.btnDoneObs', function(){
         }
     });
     
-})
+});
+/**
+ * !End Process Observation
+ */
+
+
+/**
+ * *Line Balance
+ */
+
+$(document).on('click', '.btnAddLineBalance', function(){
+    let satId = $(this).data('id');
+    $.ajax({
+        type: "GET",
+        url: "get_sat_by_id",
+        data: {
+            id: satId
+        },
+        dataType: "json",
+        success: function (response) {
+            console.log(response);
+            $('#lbDeviceName').val(response.device_name);
+            $('#lbOperationLine').val(response.operation_line);
+            $('#lbAssemblyLine').val(response.assembly_line);
+            $('#lbNoOfPins').val(response.no_of_pins);
+            drawProcessListTableForLineBalance(response.id);
+            $('#modalLineBalance').modal('show');
+        }
+    });
+});
+/**
+ * !End Line Balance
+ */
+
 /**
  * Fetches dropdown options for each specified select element via AJAX.
  * Populates each dropdown (by id) with a default "-- SELECT --" option and the items returned from the server.
@@ -420,4 +473,105 @@ const saveProcessObs = (data) => {
             console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
         }
     });
+}
+
+const drawProcessListTableForLineBalance = (satId) => {
+    dtLineBalance = $("#tableLineBalance").DataTable({
+        "processing" : true,
+        "serverSide" : true,
+        "paging": false,
+        "info" : false,
+        "ordering": false,
+        "ajax" : {
+            url: "dt_get_process_for_line_balance",
+            data: function (param){
+                param.id = satId;
+            }
+        },
+        fixedHeader: true,
+        "columns":[
+            { "data" : "process_name" },
+            { "data" : "nt" },
+            { 
+                "data" : "lb_no_operator", 
+                createdCell: function(td) {
+                    if (!$(td).text().trim()) {
+                        $(td).addClass('placeholder-cell').text('Enter value');
+                    }
+                    $(td).attr('contenteditable', 'true')
+                    .on('focus', function() {
+                        if ($(td).hasClass('placeholder-cell')) {
+                            $(td).text('').removeClass('placeholder-cell');
+                            return;
+
+                        }
+
+                    })
+                    .on('blur', function() {
+                        let row = $(td).closest('tr');
+
+                        if ($(td).text().trim() === '') {
+                            $(td).addClass('placeholder-cell').text('Enter value');
+                            row.find('td').eq(3).text('');
+                            row.find('td').eq(4).text('');
+                            return;
+                        }
+                        if (isNaN($(td).text().trim()) || !/^\d+(\.\d+)?$/.test($(td).text().trim())) {
+                            // alert('Please enter a valid percentage (numbers only)');
+                            Swal.fire({
+                                // title: "The Internet?",
+                                text: "Please enter a valid percentage (numbers only)",
+                                icon: "error"
+                            });
+                            console.log('Please enter a valid percentage (numbers only)');
+                            $(this).text('Enter value').addClass('placeholder-cell');
+                            row.find('td').eq(3).text('');
+                            row.find('td').eq(4).text('');
+                            return;
+                        }
+                        let tact = 0;
+                        let uph = 0;
+
+                        // Force numeric format (2 decimals if needed)
+                        let val = parseFloat($(td).text()) || 0;
+                        noOfOperatorToFixed = val.toFixed(2);
+                        $(td).text(noOfOperatorToFixed);
+
+                        // Caluculate Tact on front end (Viewing Purpose only)
+                        let rowStationSat =  row.find('td').eq(1).text();
+                        tact = parseFloat(rowStationSat) / parseFloat(noOfOperatorToFixed);
+                        tactDecimal = tact.toFixed(2)
+                        row.find('td').eq(3).text(tactDecimal);
+                        uph = 3600/parseFloat(tactDecimal);
+                        row.find('td').eq(4).text(uph.toFixed(2));
+
+                        // Recalculate Total No. of Operators
+                        let totalOperators = 0;
+                        $('#tableLineBalance tbody tr').each(function() {
+                            let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
+                            totalOperators += cellValue;
+                        });
+                        $('#ttlNoOperator').text(totalOperators);
+
+                    });
+                },
+            },
+            { "data" : "tact" },
+            { "data" : "lb_uph" },
+        ],
+        "columnDefs": [
+            {"className": "dt-center", "targets": "_all"},
+        ],
+        'drawCallback': function( settings ) {
+            let dtApi = this.api();
+            let data = dtApi.data();
+            let sumStationSAT = 0;
+            data.each(function(rowData, index) {
+                sumStationSAT =parseFloat(sumStationSAT) + parseFloat(rowData.st);
+                
+            });
+            let roundedUp = sumStationSAT.toFixed(2);
+            $('#TtlStationSat').html(roundedUp);
+        }
+    });//end of dataTableDevices
 }
