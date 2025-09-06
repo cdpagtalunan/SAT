@@ -559,10 +559,15 @@ const drawProcessListTableForLineBalance = (satId) => {
                         // Recalculate Total No. of Operators
                         let totalOperators = 0;
                         let highestTact = 0;
+                        let completeTact = true;
                         $('#tableLineBalance tbody tr').each(function() {
                             let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
                             totalOperators += cellValue;
 
+                            if($(this).find('td').eq(3).text() == ''){
+                                completeTact = false;
+                                return;
+                            }
                             let tactVal = parseFloat($(this).find('td').eq(3).text()) || 0;
                             if (tactVal > highestTact) {
                                 highestTact = tactVal;
@@ -571,14 +576,13 @@ const drawProcessListTableForLineBalance = (satId) => {
                         let assySAT = 0;
                         let lineBalanceValue = 0;
 
-                        console.log('highestTact', highestTact);
-                        console.log('totalOperators', totalOperators);
-                        assySAT = highestTact * totalOperators;
-
-                        lineBalanceValue = (parseFloat($('#TtlStationSat').text()) / parseFloat(assySAT) ) * 100;
-                        $('#txtLineBalVal').val(lineBalanceValue.toFixed(2))
-
-                        $('#txtLineBalAssySAT').val(assySAT.toFixed(2))
+                        // Calculate Assembly SAT and Line Balance Value if all tact is complete or doesnt have empty tact
+                        if(completeTact){
+                            assySAT = highestTact * totalOperators;
+                            lineBalanceValue = (parseFloat($('#TtlStationSat').text()) / parseFloat(assySAT) ) * 100;
+                            $('#txtLineBalVal').val(lineBalanceValue.toFixed(2))
+                            $('#txtLineBalAssySAT').val(assySAT.toFixed(2))
+                        }
                         $('#ttlNoOperator').text(totalOperators);
                     });
                 },
