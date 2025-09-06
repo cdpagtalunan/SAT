@@ -70,6 +70,7 @@ const addingSAT = () => {
     $('#operationLine').prop('disabled', false)
     $('#assemblyLine').prop('disabled', false)
     $('#txtNoPins').prop('disabled', false)
+    $('#txtQSAT').prop('disabled', false)
     $('#addingSATProcessList').show();
     $('#btnSaveDataSAT').show();
     $('#obsSAT').hide();
@@ -80,6 +81,7 @@ const obsSAT = () => {
     $('#operationLine').prop('disabled', true)
     $('#assemblyLine').prop('disabled', true)
     $('#txtNoPins').prop('disabled', true)
+    $('#txtQSAT').prop('disabled', true)
     $('#addingSATProcessList').hide();
     $('#btnSaveDataSAT').hide();
     $('#obsSAT').show();

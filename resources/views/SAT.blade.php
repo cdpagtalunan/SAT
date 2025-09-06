@@ -70,28 +70,36 @@
                 <input type="hidden" id="txtSATId" name="sat_id">
                 <div class="modal-body">
                     <div class="row mb-3">
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="input-group">
-                                <span class="input-group-text">Device Name</span>
+                                <span class="input-group-text w-50">Device Name</span>
                                 <input type="text" class="form-control" id="txtDeviceName" name="device_name" required>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="input-group">
-                                <span class="input-group-text">Operations Line</span>
+                                <span class="input-group-text w-50">Operations Line</span>
                                 <select name="operation_line" id="operationLine" class="form-control select2bs5" required></select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                        <div class="col-md-4">
                             <div class="input-group">
-                                <span class="input-group-text">Assembly Line</span>
+                                <span class="input-group-text w-50">Assembly Line</span>
                                 <select name="assembly_line" id="assemblyLine" class="form-control select2bs5" required></select>
                             </div>
                         </div>
-                        <div class="col-md-3">
+                    </div>
+                    <div class="row">
+                          <div class="col-md-6">
                             <div class="input-group">
-                                <span class="input-group-text">No. of Pins</span>
+                                <span class="input-group-text w-50">No. of Pins</span>
                                 <input type="number" min="0" class="form-control" id="txtNoPins" name="no_of_pins" required>
+                            </div>
+                        </div>
+                          <div class="col-md-6">
+                            <div class="input-group">
+                                <span class="input-group-text w-50">QSAT</span>
+                                <input type="number" min="0" class="form-control" id="txtQSAT" name="qsal" required>
                             </div>
                         </div>
                     </div>
@@ -129,7 +137,7 @@
                     <div class="row" id="obsSAT">
                         <div class="col-sm-12">
                             <div class="card"> 
-                               <div class="card-header">
+                               <div class="card-header d-flex justify-content-between">
                                     Process List
                                 </div>
                                 <div class="card-body">
@@ -155,6 +163,14 @@
                                                     <th>5</th>
                                                 </tr>
                                             </thead>
+                                            <tfoot>
+                                                <tr>
+                                                    <th colspan="10" class="text-end">Total</th>
+                                                    <th id="totalNormalTime">0</th>
+                                                    <th id="totalStandardTime">0</th>
+                                                    <th></th>
+                                                </tr>
+                                            </tfoot>
                                         </table>
                                     </div>
                                 </div>
@@ -214,25 +230,25 @@
                     <div class="col-sm-3">
                         <div class="input-group">
                             <span class="input-group-text w-50">Assembly SAT</span>
-                            <input type="text"class="form-control" id="" name="">
+                            <input type="text"class="form-control" id="txtLineBalAssySAT" name="assy_sat" readonly>
                         </div>
                     </div>
                     <div class="col-sm-3">
                         <div class="input-group">
-                            <span class="input-group-text w-50">Line Balance</span>
-                            <input type="text"class="form-control" id="" name="">
+                            <span class="input-group-text w-50">Line Balance (%)</span>
+                            <input type="text"class="form-control" id="txtLineBalVal" name="line_balance" readonly>
                         </div>
                     </div>
                     <div class="col-sm-3">
                         <div class="input-group">
                             <span class="input-group-text w-50">Output/hr</span>
-                            <input type="text"class="form-control" id="" name="">
+                            <input type="text"class="form-control" id="" name="" readonly>
                         </div>
                     </div>
                     <div class="col-sm-3">
                         <div class="input-group">
                             <span class="input-group-text w-50">PPC Output/hr</span>
-                            <input type="text"class="form-control" id="" name="">
+                            <input type="text"class="form-control" id="" name="" readonly>
                         </div>
                     </div>
                 </div>
@@ -245,6 +261,7 @@
                                         Line Balance
                                     </div>
                                     <div class="col-sm-6 d-flex justify-content-around">
+                                        
                                         <div>
                                             Total Station SAT:
                                             <label id="TtlStationSat"> 0</label>
@@ -351,7 +368,7 @@
                 { "data" : "device_name" },
                 { "data" : "operation_line" },
                 { "data" : "assembly_line" },
-                { "data" : "id" },
+                { "data" : "qsat" },
                 { "data" : "no_of_pins" },
             ],
             // "columnDefs": [
@@ -384,6 +401,7 @@
                 $('#operationLine').val(response.operation_line).trigger('change');
                 $('#assemblyLine').val(response.assembly_line).trigger('change');
                 $('#txtNoPins').val(response.no_of_pins);
+                $('#txtQSAT').val(response.qsat);
                 // console.log(response.sat_process_details);
                 
                 dtProcessLists.rows.add(response.sat_process_details).draw();
@@ -449,6 +467,7 @@
                 $('#operationLine').val(response.operation_line).trigger('change');
                 $('#assemblyLine').val(response.assembly_line).trigger('change');
                 $('#txtNoPins').val(response.no_of_pins);
+                $('#txtQSAT').val(response.qsat);
                 // console.log(response.sat_process_details);
                 obsSAT();
                 drawProcessListTableForObservation(response.id);

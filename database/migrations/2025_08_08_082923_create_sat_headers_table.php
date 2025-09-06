@@ -20,6 +20,7 @@ class CreateSatHeadersTable extends Migration
             $table->string('operation_line');
             $table->string('assembly_line');
             $table->integer('no_of_pins');
+            $table->decimal('qsat', 10, 2);
             $table->string('validated_by')->nullable();
             $table->string('validated_at')->nullable();
             $table->string('created_by');

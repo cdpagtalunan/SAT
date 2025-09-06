@@ -439,11 +439,22 @@ const drawProcessListTableForObservation = (satId) => {
                 "data"          : null,
                 "defaultContent": "--"
             },
-        ]
+        ],
+        'drawCallback': function( settings ) {
+            let dtApi = this.api();
+            let data = dtApi.data();
+            let totalNt = 0;
+            let totalSt = 0;
+            data.each(function(rowData, index) {
+                totalNt =parseFloat(totalNt) + parseFloat(rowData.nt);
+                totalSt =parseFloat(totalSt) + parseFloat(rowData.st);
+            });
 
-        // 'drawCallback': function( settings ) {
-        //     let dtApi = this.api();
-        // }
+            let roundedUpNt = totalNt.toFixed(2);
+            let roundedUpSt = totalSt.toFixed(2);   
+            $('#totalNormalTime').html(roundedUpNt);
+            $('#totalStandardTime').html(roundedUpSt);
+        }
     });//end of dataTableDevices
 }
 
@@ -547,12 +558,28 @@ const drawProcessListTableForLineBalance = (satId) => {
 
                         // Recalculate Total No. of Operators
                         let totalOperators = 0;
+                        let highestTact = 0;
                         $('#tableLineBalance tbody tr').each(function() {
                             let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
                             totalOperators += cellValue;
-                        });
-                        $('#ttlNoOperator').text(totalOperators);
 
+                            let tactVal = parseFloat($(this).find('td').eq(3).text()) || 0;
+                            if (tactVal > highestTact) {
+                                highestTact = tactVal;
+                            }
+                        });
+                        let assySAT = 0;
+                        let lineBalanceValue = 0;
+
+                        console.log('highestTact', highestTact);
+                        console.log('totalOperators', totalOperators);
+                        assySAT = highestTact * totalOperators;
+
+                        lineBalanceValue = (parseFloat($('#TtlStationSat').text()) / parseFloat(assySAT) ) * 100;
+                        $('#txtLineBalVal').val(lineBalanceValue.toFixed(2))
+
+                        $('#txtLineBalAssySAT').val(assySAT.toFixed(2))
+                        $('#ttlNoOperator').text(totalOperators);
                     });
                 },
             },
@@ -566,6 +593,7 @@ const drawProcessListTableForLineBalance = (satId) => {
             let dtApi = this.api();
             let data = dtApi.data();
             let sumStationSAT = 0;
+            console.log('drawcallback', data);
             data.each(function(rowData, index) {
                 sumStationSAT =parseFloat(sumStationSAT) + parseFloat(rowData.st);
                 
@@ -573,5 +601,5 @@ const drawProcessListTableForLineBalance = (satId) => {
             let roundedUp = sumStationSAT.toFixed(2);
             $('#TtlStationSat').html(roundedUp);
         }
-    });//end of dataTableDevices
+    });//end of 
 }
