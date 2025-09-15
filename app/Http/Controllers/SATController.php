@@ -7,18 +7,23 @@ use App\Http\Requests\SATRequest;
 use App\Solid\Services\SATService;
 use App\Solid\Services\DropdownService;
 use App\Http\Requests\SATProcessRequest;
+use App\Http\Requests\LineBalanceRequest;
+use App\Solid\Services\LineBalanceService;
 
 class SATController extends Controller
 {
     protected $dropdownService;
     protected $satService;
+    protected $lineBalanceService;
     
     public function __construct( 
         DropdownService $dropdownService,
-        SATService $satService
+        SATService $satService,
+        LineBalanceService $lineBalanceService
     ) {
         $this->dropdownService = $dropdownService;
         $this->satService = $satService;
+        $this->lineBalanceService = $lineBalanceService;
     }
 
     public function getDropdownData(Request $request){
@@ -57,5 +62,10 @@ class SATController extends Controller
 
     public function dtGetProcessForLineBalance(Request $request){
         return $this->satService->dtGetProcessForObservation($request->id);
+    }
+
+    public function saveLineBalance(LineBalanceRequest $request){
+        $data = $request->exeptTokenParameters();
+        return $this->lineBalanceService->saveLineBalance($data);
     }
 }

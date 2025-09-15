@@ -99,7 +99,7 @@
                           <div class="col-md-6">
                             <div class="input-group">
                                 <span class="input-group-text w-50">QSAT</span>
-                                <input type="number" min="0" class="form-control" id="txtQSAT" name="qsal" required>
+                                <input type="number" min="0" class="form-control" id="txtQSAT" name="qsat" required>
                             </div>
                         </div>
                     </div>
@@ -196,107 +196,111 @@
                     <span >&times;</span>
                 </button>
             </div>
-            <div class="modal-body">
-                <div class="row mb-2">
-                    <div class="col-md-3">
-                        <div class="input-group">
-                            <span class="input-group-text w-50">Device Name</span>
-                            <input type="text" class="form-control" id="lbDeviceName" name="" readonly>
+            <form id="formLineBalance">
+                @csrf
+                <input type="hidden" id="satHeaderId" name="sat_header_id">
+                <div class="modal-body">
+                    <div class="row mb-2">
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-text w-50">Device Name</span>
+                                <input type="text" class="form-control" id="lbDeviceName" name="" readonly>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="input-group">
-                            <span class="input-group-text w-50">Operations Line</span>
-                            <input type="text" class="form-control" id="lbOperationLine" name="" readonly>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-text w-50">Operations Line</span>
+                                <input type="text" class="form-control" id="lbOperationLine" name="" readonly>
 
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-3">
-                        <div class="input-group">
-                            <span class="input-group-text w-50">Assembly Line</span>
-                            <input type="text" class="form-control" id="lbAssemblyLine" name="" readonly>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-text w-50">Assembly Line</span>
+                                <input type="text" class="form-control" id="lbAssemblyLine" name="" readonly>
 
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="input-group">
+                                <span class="input-group-text w-50">No. of Pins</span>
+                                <input type="number" min="0" class="form-control" id="lbNoOfPins" name="" readonly>
+                            </div>
                         </div>
                     </div>
-                    <div class="col-md-3">
-                        <div class="input-group">
-                            <span class="input-group-text w-50">No. of Pins</span>
-                            <input type="number" min="0" class="form-control" id="lbNoOfPins" name="" readonly>
+                    <hr>
+                    <div class="row">
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text w-50">Assembly SAT</span>
+                                <input type="text"class="form-control" id="txtLineBalAssySAT" name="assy_sat" readonly>
+                            </div>
                         </div>
-                    </div>
-                </div>
-                <hr>
-                <div class="row">
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <span class="input-group-text w-50">Assembly SAT</span>
-                            <input type="text"class="form-control" id="txtLineBalAssySAT" name="assy_sat" readonly>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text w-50">Line Balance (%)</span>
+                                <input type="text"class="form-control" id="txtLineBalVal" name="line_balance" readonly>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <span class="input-group-text w-50">Line Balance (%)</span>
-                            <input type="text"class="form-control" id="txtLineBalVal" name="line_balance" readonly>
+                        <div class="col-sm-4">
+                            <div class="input-group">
+                                <span class="input-group-text w-50">Output/hr</span>
+                                <input type="text"class="form-control" id="txtOutputPerHr" name="output_per_hr" readonly>
+                            </div>
                         </div>
+                        {{-- <div class="col-sm-3">
+                            <div class="input-group">
+                                <span class="input-group-text w-50">PPC Output/hr</span>
+                                <input type="text"class="form-control" id="txtPPCOutputPerHr" name="ppc_output_per_hr">
+                            </div>
+                        </div> --}}
                     </div>
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <span class="input-group-text w-50">Output/hr</span>
-                            <input type="text"class="form-control" id="" name="" readonly>
-                        </div>
-                    </div>
-                    <div class="col-sm-3">
-                        <div class="input-group">
-                            <span class="input-group-text w-50">PPC Output/hr</span>
-                            <input type="text"class="form-control" id="" name="" readonly>
-                        </div>
-                    </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col-sm-12">
-                        <div class="card" id="id"> 
-                            <div class="card-header">
-                                <div class="row">
-                                    <div class="col-sm-6">
-                                        Line Balance
+                    <div class="row mt-3">
+                        <div class="col-sm-12">
+                            <div class="card" id="id"> 
+                                <div class="card-header">
+                                    <div class="row">
+                                        <div class="col-sm-6">
+                                            Line Balance
+                                        </div>
+                                        <div class="col-sm-6 d-flex justify-content-around">
+                                            
+                                            <div>
+                                                Total Station SAT:
+                                                <label id="TtlStationSat"> 0</label>
+                                            </div>
+                                            <div>
+                                                Total No. of Operators:
+                                                <label id="ttlNoOperator"> 0</label>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div class="col-sm-6 d-flex justify-content-around">
+                                </div>
+                                <div class="card-body">
+                                    <div class="table-responsive">
+                                        <table class="table table-hover table-bordered w-100" id="tableLineBalance">
+                                            <thead>
+                                                <tr>
+                                                    <th>Process</th>
+                                                    <th>Station SAT</th>
+                                                    <th>No. of Operators</th>
+                                                    <th>TACT</th>
+                                                    <th>UPH</th>
+                                                </tr>
+                                            </thead>
                                         
-                                        <div>
-                                            Total Station SAT:
-                                            <label id="TtlStationSat"> 0</label>
-                                        </div>
-                                        <div>
-                                            Total No. of Operators:
-                                            <label id="ttlNoOperator"> 0</label>
-                                        </div>
+                                        </table>
                                     </div>
-                                </div>
-                            </div>
-                            <div class="card-body">
-                                <div class="table-responsive">
-                                    <table class="table table-hover table-bordered w-100" id="tableLineBalance">
-                                        <thead>
-                                            <tr>
-                                                <th>Process</th>
-                                                <th>Station SAT</th>
-                                                <th>No. of Operators</th>
-                                                <th>TACT</th>
-                                                <th>UPH</th>
-                                            </tr>
-                                        </thead>
-                                       
-                                    </table>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer justify-content-between">
-                <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
-                <button type="button" class="btn btn-sm btn-success" title="Save Line Balance" id="btnSaveLineBalance">Save</button>
-            </div>
+                <div class="modal-footer justify-content-between">
+                    <button type="button" class="btn btn-sm btn-secondary" data-bs-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-sm btn-success" title="Save Line Balance" id="btnSaveLineBalance">Save</button>
+                </div>
+            </form>
         </div>
     </div>
 </div>
@@ -304,9 +308,11 @@
 
 @endsection
 @section('js_content')
+
 <script>
     
     let dtProcessLists, dtSat, dtSatObservation, dtLineBalance;
+    let operatorListSAT;
     $(document).ready(function () {
         // Calls the function to fetch dropdown data for Assembly Line and Operation Line when the page loads.
         // The data will be used to populate the corresponding select elements in the modal form.
@@ -320,6 +326,9 @@
          * Adds a delete button for each row.
          * Applies center alignment to the action column.
          */
+        // <button class="btn btn-sm btn-secondary" type="button" title="Edit Process" onclick="editProcessList(${meta.row})">
+        //                         <i class="fa-solid fa-edit"></i>
+        //                     </button>
         dtProcessLists = $('#tableProcessLists').DataTable({
             "info" : false,
             "processing" : true,
@@ -329,9 +338,12 @@
                 { 
                     "data": "data",
                     render: function (data, type, row, meta) {
-                        return `<button class="btn btn-sm btn-danger" title="Delete Process" onclick="dtProcessLists.row(${meta.row}).remove().draw();">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>`;
+                        return `
+                            <button class="btn btn-sm btn-danger" title="Delete Process" onclick="dtProcessLists.row(${meta.row}).remove().draw();">
+                                <i class="fa-solid fa-trash"></i>
+                            </button>
+                            
+                        `;
                     },
                 },
                 { "data": "process_name" },
@@ -341,14 +353,25 @@
                 {
                     targets: [1, 2], // which columns are editable (0-based index)
                     createdCell: function (td, cellData, rowData, row, col) {
+                        console.log(rowData);
                         // $(td).attr('contenteditable', 'true');
                         let headerText = $('#tableProcessLists thead th').eq(col).text().trim();
                         if (cellData === "*" || !cellData) {
-                            $(td)
+                            if(col == 1){
+                               $(td)
                                 .attr('contenteditable', 'true')
                                 .attr('title', `Enter ${headerText}`)
                                 .addClass('placeholder-cell')
-                                .text('Enter value');
+                                .text(`Enter ${headerText}`);
+                            } else {
+                               $(td)
+                                .attr('contenteditable', 'true')
+                                .attr('title', `Enter ${headerText}`)
+                                .text('0.00');
+                            }
+                        }
+                        else{
+                            $(td).attr('contenteditable', 'true').text(cellData);
                         }
                     }
                 },
@@ -383,7 +406,22 @@
             //     let dtApi = this.api();
             // }
         });//end
-        
+
+        $('#saveLineBalance').on('submit', function(e){
+            e.preventDefault();
+            console.log('qwe');
+        })
+
+        $('#modalDataSAT').on('hidden.bs.modal', function(){
+            dtProcessLists.clear().draw();
+            $('#operationLine').val('').trigger('change');
+            $('#assemblyLine').val('').trigger('change');
+            modalCloseResetForm($('#formDataSAT')[0], 'modalDataSAT');
+        });
+
+        $('#modalLineBalance').on('hidden.bs.modal', function(){
+            modalCloseResetForm($('#formLineBalance')[0], 'modalLineBalance');
+        });
     });
 
     $(document).on('click', '.btnEditSAT', function(){
@@ -422,32 +460,32 @@
         }).then((result) => {
             /* Read more about isConfirmed, isDenied below */
             if (result.isConfirmed) {
-                  $.ajax({
-                      type: "POST",
-                      url: "{{ route('proceed_obs') }}",
-                      data: {
-                          _token: "{{ csrf_token() }}",
-                          id: satId
-                      },
-                      dataType: "json",
-                      beforeSend: function () {
-                          $(this).prop('disabled', true);
-                      },
-                      success: function (response) {
-                          if (!response.result) {
-                              toastr.error('Proceed failed! Please try again.')
-                              return;
-                          }
-                          dtSat.draw();
-                          toastr.success(response.msg);
-                          $(this).prop('disabled', false);
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('proceed_obs') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: satId
+                    },
+                    dataType: "json",
+                    beforeSend: function () {
+                        $(this).prop('disabled', true);
+                    },
+                    success: function (response) {
+                        if (!response.result) {
+                            toastr.error('Proceed failed! Please try again.')
+                            return;
+                        }
+                        dtSat.draw();
+                        toastr.success(response.msg);
+                        $(this).prop('disabled', false);
 
-                      },
-                      error: function (xhr, status, error) {
-                          $(this).prop('disabled', false);
-                          console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
-                      }
-                  });
+                    },
+                    error: function (xhr, status, error) {
+                        $(this).prop('disabled', false);
+                        console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
+                    }
+                });
             }
         });
     });
@@ -468,13 +506,45 @@
                 $('#assemblyLine').val(response.assembly_line).trigger('change');
                 $('#txtNoPins').val(response.no_of_pins);
                 $('#txtQSAT').val(response.qsat);
-                // console.log(response.sat_process_details);
                 obsSAT();
+                getOperatorList($('#selOperatorName'));
                 drawProcessListTableForObservation(response.id);
-
                 $('#modalDataSAT').modal('show');
             }
         });
     });
+
+    // const editProcessList = (params) => {
+    //     let row = $('#tableProcessLists tbody tr').eq(params);
+    //     row.find('td').eq(1).attr('contenteditable', 'true').focus(); // Process column
+    //     row.find('td').eq(2).attr('contenteditable', 'true');  // Allowance column
+
+    //     let actionCell = row.find('td').eq(0);
+    //     actionCell.html(`
+    //         <button class="btn btn-sm btn-danger" title="Delete Process" onclick="dtProcessLists.row(${params}).remove().draw();">
+    //             <i class="fa-solid fa-trash"></i>
+    //         </button>
+    //          <button class="btn btn-sm btn-success" type="button" title="Save Process" onclick="saveProcessList(${params})">
+    //             <i class="fa-solid fa-check"></i>
+    //         </button>
+    //     `);
+    // }
+
+    // const saveProcessList = (params) => {
+    //     let row = $('#tableProcessLists tbody tr').eq(params);
+    //     row.find('td').eq(1).attr('contenteditable', 'false');
+    //     row.find('td').eq(2).attr('contenteditable', 'false');
+
+    //     // Restore the edit button
+    //     let actionCell = row.find('td').eq(0);
+    //     actionCell.html(`
+    //         <button class="btn btn-sm btn-danger" title="Delete Process" onclick="dtProcessLists.row(${params}).remove().draw();">
+    //             <i class="fa-solid fa-trash"></i>
+    //         </button>
+    //         <button class="btn btn-sm btn-secondary" type="button" title="Edit Process" onclick="editProcessList(${params})">
+    //             <i class="fa-solid fa-edit"></i>
+    //         </button>
+    //     `);
+    // }
 </script>
 @endsection

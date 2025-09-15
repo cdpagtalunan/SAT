@@ -18,7 +18,7 @@ class CreateSatProcessesTable extends Migration
             $table->unsignedBigInteger('sat_header_id');
             $table->string('process_name');
             $table->decimal('allowance',8,2);
-            $table->unsignedBigInteger('user_rapidx_id')->nullable();
+            $table->string('operator_name')->nullable();
             $table->decimal('obs_1',8,2)->nullable();
             $table->decimal('obs_2',8,2)->nullable();
             $table->decimal('obs_3',8,2)->nullable();

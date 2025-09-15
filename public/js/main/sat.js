@@ -98,14 +98,6 @@ $(document).ready(function () {
         }
     })
 
-     $('#modalDataSAT').on('hidden.bs.modal', function(){
-        dtProcessLists.clear().draw();
-        $('#operationLine').val('').trigger('change');
-        $('#assemblyLine').val('').trigger('change');
-        modalCloseResetForm($('#formDataSAT')[0], 'modalDataSAT');
-    });
-
-    
     // Placeholder removal / restore
     $('#tableSATObservation').on('focus', '[contenteditable="true"]', function () {
         if ($(this).hasClass('placeholder-cell')) {
@@ -123,19 +115,30 @@ $(document).ready(function () {
     $('#btnSaveLineBalance').on('click', function(e){
         e.preventDefault();
         let data = [];
+        let result = true;
         dtLineBalance.rows().every(function (rowIdx, tableLoop, rowLoop) {
-            console.log(rowIdx);
             let rowNode = this.node();
-            console.log('rowNode', rowNode);
-            console.log('tr ID: ',$(rowNode).attr('id'));
-            console.log('no of operator: ',$(rowNode).find('td').eq(2).text());
             data.push( {
                 'satProcessId' : $(rowNode).attr('id'),
                 'noOfOperator'  : $(rowNode).find('td').eq(2).text()
             });
         });
 
-        console.log('data', data);
+        data.forEach(data => {
+            if(data.noOfOperator == 'Enter value' || data.noOfOperator == ''){
+                swal.fire({
+                    title: "Error",
+                    text: "Please enter a valid number for No. of Operators.",
+                    icon: "error"
+                });
+                result = false;
+                return;
+            }
+        });
+
+        if(result){
+            saveLineBalance(data);
+        }
     })
 });
 
@@ -148,9 +151,18 @@ $(document).on('click', '.btnAddProcessObs', function(e){
     let row = $(this).closest('tr');
     let cells = row.find('td');
     let processId = $(this).data('id');
-
-    // Set session name
-    cells.eq(2).html(sessionName);
+    
+    let selectHtml = `
+        <select class="form-control form-control-sm w-auto select2bs5" id="selOperatorName">
+        </select>
+    `;
+    cells.eq(2).html(selectHtml);
+    cells.eq(2).find('select').select2({
+        theme: 'bootstrap-5',
+        width: '100%',
+        dropdownParent: cells.eq(2), // important if inside DataTables or modals
+        minimumResultsForSearch: 0
+    });
 
     // Editable columns range: 3 to 7
     for (let i = 3; i <= 7; i++) {
@@ -158,82 +170,35 @@ $(document).on('click', '.btnAddProcessObs', function(e){
         cell.attr('contenteditable', 'true');
         if (cell.text().trim() === '--') {
             cell.addClass('placeholder-cell')
-                 .text('Enter value');
+                .text('Enter value');
         }
     }
+
+    $('#selOperatorName').html(operatorListSAT);
 
     // Show the process observation buttons
     row.find('#divButtonProcessObs').removeClass('d-none');
     $(this).addClass('d-none');
-    // e.preventDefault();
-    // // console.log($(this).closest('tr').find('#divButtonProcessObs'));
-    // let processId = $(this).data('id');
-    // let tds = $(this).closest('tr').find('td');
-    // tds.eq(2).html(sessionName)
-    // if(tds.eq(3).text() == '--'){
-    //     tds.eq(3).attr('contenteditable', 'true');
-    //     tds.eq(3).addClass('placeholder-cell').text('Enter value')
-    // }
-    // if(tds.eq(4).text() == '--'){
-    //     tds.eq(4).attr('contenteditable', 'true');
-    //     tds.eq(4).addClass('placeholder-cell').text('Enter value')
-    // }
-    // if(tds.eq(5).text() == '--'){
-    //     tds.eq(5).attr('contenteditable', 'true');
-    //     tds.eq(5).addClass('placeholder-cell').text('Enter value')
-    // }
-    // if(tds.eq(6).text() == '--'){
-    //     tds.eq(6).attr('contenteditable', 'true');
-    //     tds.eq(6).addClass('placeholder-cell').text('Enter value')
-    // }
-    // if(tds.eq(7).text() == '--'){
-    //     tds.eq(7).attr('contenteditable', 'true');
-    //     tds.eq(7).addClass('placeholder-cell').text('Enter value')
-    // }
-    // $(this).closest('tr').find('#divButtonProcessObs').removeClass('d-none');
-    // $(this).addClass('d-none')
+
 });
 
 $(document).on('click', '.btnCancel', function(e){
-    // e.preventDefault();
-    // let tds = $(this).closest('tr').find('td');
-    // if(tds.eq(3).text() == 'Enter value'){
-    //     tds.eq(3).attr('contenteditable', 'false');
-    //     tds.eq(3).addClass('placeholder-cell').text('--')
-    // }
-    // if(tds.eq(4).text() == 'Enter value'){
-    //     tds.eq(4).attr('contenteditable', 'false');
-    //     tds.eq(4).addClass('placeholder-cell').text('--')
-    // }
-    // if(tds.eq(5).text() == 'Enter value'){
-    //     tds.eq(5).attr('contenteditable', 'false');
-    //     tds.eq(5).addClass('placeholder-cell').text('--')
-    // }
-    // if(tds.eq(6).text() == 'Enter value'){
-    //     tds.eq(6).attr('contenteditable', 'false');
-    //     tds.eq(6).addClass('placeholder-cell').text('--')
-    // }
-    // if(tds.eq(7).text() == 'Enter value'){
-    //     tds.eq(7).attr('contenteditable', 'false');
-    //     tds.eq(7).addClass('placeholder-cell').text('--')
-    // }
-
-    // $(this).closest('tr').find('.btnAddProcessObs').removeClass('d-none');
-    // $(this).closest('tr').find('#divButtonProcessObs').addClass('d-none')
-
+   
      e.preventDefault();
 
     let row = $(this).closest('tr');
     let cells = row.find('td');
+    let cellSelect = cells.eq(2);
+    cellSelect.attr('contenteditable', 'false')
+        .addClass('placeholder-cell')
+        .text('--');
 
     // Editable columns range: 3 to 7
     for (let i = 3; i <= 7; i++) {
         let cell = cells.eq(i);
-        if (cell.text().trim() === 'Enter value') {
-            cell.attr('contenteditable', 'false')
-                 .addClass('placeholder-cell')
-                 .text('--');
-        }
+        cell.attr('contenteditable', 'false')
+            .addClass('placeholder-cell')
+            .text('--');
     }
 
     // Toggle button visibility
@@ -245,11 +210,29 @@ $(document).on('click', '.btnSaveProcessObs', function(e){
     e.preventDefault();
     let processId = $(this).data('id');
     let row = dtSatObservation.row($(this).closest('tr'));
+    if($('#selOperatorName').val() == null){
+        Swal.fire({
+            title: 'Error!',
+            text: 'Please select operator',
+            icon: "error"
+        });
+        return
+    }
     row.every(function (rowIdx, tableLoop, rowLoop) {
         let rowNode = this.node();
+        
+        if($(rowNode).find('td').eq(3).html() == 'Enter value'){
+            Swal.fire({
+                title: 'Error!',
+                text: 'Please enter observation',
+                icon: "error"
+            });
+            return
+        }
         dataToSave = {
             id      : processId,
-            operator: sessionEmpNo,
+            // operator: sessionEmpNo,
+            operator: $('#selOperatorName').val(),
             obs1    : $(rowNode).find('td').eq(3).html() == 'Enter value' ? '': $(rowNode).find('td').eq(3).html(),
             obs2    : $(rowNode).find('td').eq(4).html() == 'Enter value' ? '': $(rowNode).find('td').eq(4).html(),
             obs3    : $(rowNode).find('td').eq(5).html() == 'Enter value' ? '': $(rowNode).find('td').eq(5).html(),
@@ -334,6 +317,7 @@ $(document).on('click', '.btnAddLineBalance', function(){
             $('#lbOperationLine').val(response.operation_line);
             $('#lbAssemblyLine').val(response.assembly_line);
             $('#lbNoOfPins').val(response.no_of_pins);
+            $('#satHeaderId').val(response.id);
             drawProcessListTableForLineBalance(response.id);
             $('#modalLineBalance').modal('show');
         }
@@ -420,7 +404,7 @@ const drawProcessListTableForObservation = (satId) => {
         "columns"    : [
             { "data" : "actions", orderable:false, searchable:false },
             { "data" : "process_name" },
-            { "data" : "rapidx_user_details.name" },
+            { "data" : "operator_name" },
             { "data" : "obs_1" },
             { "data" : "obs_2" },
             { "data" : "obs_3" },
@@ -445,10 +429,16 @@ const drawProcessListTableForObservation = (satId) => {
             let data = dtApi.data();
             let totalNt = 0;
             let totalSt = 0;
+                console.log(data);
+            
             data.each(function(rowData, index) {
                 totalNt =parseFloat(totalNt) + parseFloat(rowData.nt);
-                totalSt =parseFloat(totalSt) + parseFloat(rowData.st);
+                if(rowData.st){
+                    totalSt =parseFloat(totalSt) + parseFloat(rowData.st);
+                }
+
             });
+
 
             let roundedUpNt = totalNt.toFixed(2);
             let roundedUpSt = totalSt.toFixed(2);   
@@ -465,6 +455,7 @@ const saveProcessObs = (data) => {
         data: data,
         dataType: "json",
         beforeSend: function(){
+            $('.btnSaveProcessObs').prop('disabled', true);
         },
         success: function (response) {
             if(response.result){
@@ -473,8 +464,10 @@ const saveProcessObs = (data) => {
             }
             else{
                 toastr.error('Something went wrong. Please call ISS!');
-
             }
+
+            $('.btnSaveProcessObs').prop('disabled', false);
+
         },
         error: function(xhr, status, error){
             if(xhr.status == 422){
@@ -482,6 +475,8 @@ const saveProcessObs = (data) => {
             }
             toastr.error('Something went wrong. Please call ISS!');
             console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
+            $('.btnSaveProcessObs').prop('disabled', false);
+
         }
     });
 }
@@ -493,6 +488,7 @@ const drawProcessListTableForLineBalance = (satId) => {
         "paging": false,
         "info" : false,
         "ordering": false,
+        "bDestroy"  : true,
         "ajax" : {
             url: "dt_get_process_for_line_balance",
             data: function (param){
@@ -556,34 +552,39 @@ const drawProcessListTableForLineBalance = (satId) => {
                         uph = 3600/parseFloat(tactDecimal);
                         row.find('td').eq(4).text(uph.toFixed(2));
 
-                        // Recalculate Total No. of Operators
-                        let totalOperators = 0;
-                        let highestTact = 0;
-                        let completeTact = true;
-                        $('#tableLineBalance tbody tr').each(function() {
-                            let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
-                            totalOperators += cellValue;
+                        // // Recalculate Total No. of Operators
+                        // let totalOperators = 0;
+                        // let highestTact = 0;
+                        // let completeTact = true;
+                        // $('#tableLineBalance tbody tr').each(function() {
+                        //     let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
+                        //     totalOperators += cellValue;
 
-                            if($(this).find('td').eq(3).text() == ''){
-                                completeTact = false;
-                                return;
-                            }
-                            let tactVal = parseFloat($(this).find('td').eq(3).text()) || 0;
-                            if (tactVal > highestTact) {
-                                highestTact = tactVal;
-                            }
-                        });
-                        let assySAT = 0;
-                        let lineBalanceValue = 0;
+                        //     if($(this).find('td').eq(3).text() == ''){
+                        //         completeTact = false;
+                        //         return;
+                        //     }
+                        //     let tactVal = parseFloat($(this).find('td').eq(3).text()) || 0;
+                        //     if (tactVal > highestTact) {
+                        //         highestTact = tactVal;
+                        //     }
+                        // });
+                        // let assySAT = 0;
+                        // let lineBalanceValue = 0;
+                        // let outputPerHour = 0;
+                        // // Calculate Assembly SAT and Line Balance Value if all tact is complete or doesnt have empty tact
+                        // if(completeTact){
+                        //     assySAT = highestTact * totalOperators;
+                        //     lineBalanceValue = (parseFloat($('#TtlStationSat').text()) / parseFloat(assySAT) ) * 100;
+                        //     outputPerHour = 3600 / highestTact;
+                            
+                        //     $('#txtLineBalVal').val(lineBalanceValue.toFixed(2))
+                        //     $('#txtLineBalAssySAT').val(assySAT.toFixed(2))
+                        //     $('#txtOutputPerHr').val(outputPerHour.toFixed(2))
+                        // }
+                        // $('#ttlNoOperator').text(totalOperators);
 
-                        // Calculate Assembly SAT and Line Balance Value if all tact is complete or doesnt have empty tact
-                        if(completeTact){
-                            assySAT = highestTact * totalOperators;
-                            lineBalanceValue = (parseFloat($('#TtlStationSat').text()) / parseFloat(assySAT) ) * 100;
-                            $('#txtLineBalVal').val(lineBalanceValue.toFixed(2))
-                            $('#txtLineBalAssySAT').val(assySAT.toFixed(2))
-                        }
-                        $('#ttlNoOperator').text(totalOperators);
+                        calculateLineBalance();
                     });
                 },
             },
@@ -599,11 +600,104 @@ const drawProcessListTableForLineBalance = (satId) => {
             let sumStationSAT = 0;
             console.log('drawcallback', data);
             data.each(function(rowData, index) {
-                sumStationSAT =parseFloat(sumStationSAT) + parseFloat(rowData.st);
+                sumStationSAT = parseFloat(sumStationSAT) + parseFloat(rowData.nt);
                 
             });
             let roundedUp = sumStationSAT.toFixed(2);
             $('#TtlStationSat').html(roundedUp);
+
+            calculateLineBalance();
+
         }
     });//end of 
+}
+
+const saveLineBalance = (data) => {
+    $.ajax({
+        type: "POST",
+        url: "save_line_balance",
+        // data: params,
+        data : {
+            tbl_line_bal     : data,
+            ppc_output_per_hr: $('#txtPPCOutputPerHr', $('#formLineBalance')).val(),
+            sat_header_id    : $('#satHeaderId', $('#formLineBalance')).val(),
+            _token           : token
+        },
+        dataType: "json",
+        beforeSend: function(){
+            $('#btnSaveLineBalance').prop('disabled', true);
+        },
+        success: function (response) {
+            if(!response.result){
+                toastr.error('Saving Failed. Please try again.');
+                return;
+            }
+            toastr.success('Successfully Saved!');
+            $('#modalLineBalance').modal('hide');
+            $('#btnSaveLineBalance').prop('disabled', false);
+        },
+        error: function(xhr, status, error){
+            if(xhr.status == 422){
+                handleValidatorErrors(xhr.responseJSON.errors);
+            }
+            console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
+            toastr.error('Something went wrong. please call ISS!');
+            $('#btnSaveLineBalance').prop('disabled', false);
+        }
+    });
+}
+
+const getOperatorList = (cboElement) => {
+    $.ajax({
+        type: "GET",
+        url: "get_operator_list",
+        // data: "data",
+        dataType: "json",
+        beforeSend: function(){
+        },
+        success: function (response) {
+            operatorListSAT = "";
+            operatorListSAT += `<option value="" selected disabled>--SELECT--</option>`;
+            operatorListSAT += `<option value="N/A">N/A</option>`;
+            response.forEach(element => {
+                operatorListSAT += `<option value="${element.fullname}">${element.fullname}</option>`;
+            });
+        },
+        error: function(xhr, status, error){
+            console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
+        }
+    });
+}
+
+const calculateLineBalance = () => {
+    let totalOperators = 0;
+    let highestTact = 0;
+    let completeTact = true;
+    $('#tableLineBalance tbody tr').each(function() {
+        let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
+        totalOperators += cellValue;
+
+        if($(this).find('td').eq(3).text() == ''){
+            completeTact = false;
+            return;
+        }
+        let tactVal = parseFloat($(this).find('td').eq(3).text()) || 0;
+        if (tactVal > highestTact) {
+            highestTact = tactVal;
+        }
+    });
+    let assySAT = 0;
+    let lineBalanceValue = 0;
+    let outputPerHour = 0;
+    // Calculate Assembly SAT and Line Balance Value if all tact is complete or doesnt have empty tact
+    if(completeTact){
+        assySAT = highestTact * totalOperators;
+        lineBalanceValue = (parseFloat($('#TtlStationSat').text()) / parseFloat(assySAT) ) * 100;
+        outputPerHour = 3600 / highestTact;
+        
+        $('#txtLineBalVal').val(lineBalanceValue.toFixed(2))
+        $('#txtLineBalAssySAT').val(assySAT.toFixed(2))
+        $('#txtOutputPerHr').val(outputPerHour.toFixed(2))
+    }
+    $('#ttlNoOperator').text(totalOperators);
 }

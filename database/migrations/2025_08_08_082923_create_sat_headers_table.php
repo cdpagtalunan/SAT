@@ -23,6 +23,7 @@ class CreateSatHeadersTable extends Migration
             $table->decimal('qsat', 10, 2);
             $table->string('validated_by')->nullable();
             $table->string('validated_at')->nullable();
+            $table->decimal('lb_ppc_output_per_hr',8,2)->nullable();
             $table->string('created_by');
             $table->string('updated_by')->nullable();
             $table->timestamps();

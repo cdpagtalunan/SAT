@@ -37,6 +37,7 @@ class SATService implements SATServiceInterface
             'operation_line' => $data['operation_line'],
             'assembly_line'  => $data['assembly_line'],
             'no_of_pins'     => $data['no_of_pins'],
+            'qsat'           => $data['qsat'],
         );
         try{
             if(isset($data['sat_id'])){ // Update
@@ -54,8 +55,8 @@ class SATService implements SATServiceInterface
                 $process_list = array_map(function ($row) use ($data) {
                     return $row + [
                         'sat_header_id' => $data['sat_id'],
-                        'updated_by' => session('rapidx_id'),
-                        'updated_at' => now()
+                        'created_by' => session('rapidx_id'),
+                        'created_at' => now()
                     ];
                 }, $data['process_list']);
                 $result = $this->satProcessRepository->insert($process_list);
@@ -251,14 +252,14 @@ class SATService implements SATServiceInterface
         DB::beginTransaction();
         try{
             $update_array = array(
-                'user_rapidx_id' => $data['operator'],
-                'obs_1'=> $data['obs1'],
-                'obs_2'=> $data['obs2'],
-                'obs_3'=> $data['obs3'],
-                'obs_4'=> $data['obs4'],
-                'obs_5'=> $data['obs5'],
-                'updated_at' => NOW(),
-                'updated_by' => session('rapidx_id'),
+                'operator_name' => $data['operator'],
+                'obs_1'         => $data['obs1'],
+                'obs_2'         => $data['obs2'],
+                'obs_3'         => $data['obs3'],
+                'obs_4'         => $data['obs4'],
+                'obs_5'         => $data['obs5'],
+                'updated_at'    => NOW(),
+                'updated_by'    => session('rapidx_id'),
             );
             $result = $this->satProcessRepository->update($update_array, $data['id']);
             DB::commit();
