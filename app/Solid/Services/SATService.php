@@ -1,26 +1,30 @@
 <?php
 namespace App\Solid\Services;
+use DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Solid\Services\Interfaces\SATServiceInterface;
 use App\Solid\Repositories\Interfaces\SATHeaderRepositoryInterface;
-use App\Solid\Repositories\Interfaces\SATProcessRepositoryInterface;
 // Service implements the ServiceInterface, responsible for saving users.
 
-use DataTables;
+use App\Solid\Repositories\Interfaces\SATProcessRepositoryInterface;
+use App\Solid\Repositories\Interfaces\SATApproverRepositoryInterface;
 date_default_timezone_set('Asia/Manila');
 class SATService implements SATServiceInterface
 {
     
     private $satHeaderRepository;
     private $satProcessRepository;
+    private $satApproverRepository;
 
     public function __construct(
         SATHeaderRepositoryInterface $satHeaderRepository,
-        SATProcessRepositoryInterface $satProcessRepository
+        SATProcessRepositoryInterface $satProcessRepository,
+        SATApproverRepositoryInterface $satApproverRepository
     )
     {
         $this->satHeaderRepository = $satHeaderRepository;
         $this->satProcessRepository = $satProcessRepository;
+        $this->satApproverRepository = $satApproverRepository;
     }
     
     /**
@@ -109,10 +113,22 @@ class SATService implements SATServiceInterface
                     $result .= "<button class='btn btn-sm btn-success btnDoneObs ml-1' data-id='{$data->id}' title='Proceed for line balance'><i class='fa-solid fa-check'></i></button>";
                     break;
                 case 2:
+                    $disabled = '';
+                    $msg = "Proceed for Heads Approval";
+                    $conditions = array(
+                        'sat_header_id' => $data->id
+                    );
+                    $relations = array();
+                    $sat_process = $this->satProcessRepository->getWithRelationsConditions($relations, $conditions);
+                    $collections = collect($sat_process)->where('lb_no_operator', null)->count();
                     $result .= "<button class='btn btn-sm btn-primary btnAddLineBalance' data-id='{$data->id}' title='Add Line Balance'><i class='fa-solid fa-circle-info'></i></button>";
+                    if($collections > 0){
+                        $disabled = 'disabled';
+                        $msg = "Complete line balance";
+                    }
+                    $result .= "<button class='btn btn-sm btn-success btnDoneLineBal ml-1' data-id='{$data->id}' title='{$msg}' {$disabled}><i class='fa-solid fa-check'></i></button>";
                     break;
                 default:
-                    # code...
                     break;
             }
             $result .= "</center>";
@@ -305,6 +321,23 @@ class SATService implements SATServiceInterface
         }catch(Exemption $e){
             DB::rollback();
             return $e;
+        }
+    }
+
+    public function proceedApproval(int $satId){
+        DB::beginTransaction();
+        try{
+            $header_update_array = array(
+                'status' => 3,
+            );
+            $this->satHeaderRepository->update($header_array, $satId);
+
+            
+            // $this->satApproverRepository->
+            // DB::commit();
+        }catch(Exemption $e){
+            DB::rollback();
+            return $e; 
         }
     }
 }

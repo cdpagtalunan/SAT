@@ -633,6 +633,7 @@ const saveLineBalance = (data) => {
                 return;
             }
             toastr.success('Successfully Saved!');
+            dtSat.draw();
             $('#modalLineBalance').modal('hide');
             $('#btnSaveLineBalance').prop('disabled', false);
         },
@@ -694,10 +695,31 @@ const calculateLineBalance = () => {
         assySAT = highestTact * totalOperators;
         lineBalanceValue = (parseFloat($('#TtlStationSat').text()) / parseFloat(assySAT) ) * 100;
         outputPerHour = 3600 / highestTact;
-        
         $('#txtLineBalVal').val(lineBalanceValue.toFixed(2))
         $('#txtLineBalAssySAT').val(assySAT.toFixed(2))
         $('#txtOutputPerHr').val(outputPerHour.toFixed(2))
     }
     $('#ttlNoOperator').text(totalOperators);
+}
+
+const proceedForApproval = (satId) => {
+    $.ajax({
+        type: "POST",
+        url: "proceed_for_approval",
+        data: {
+            _token : token,
+            sat_id : satId
+        },
+        dataType: "json",
+        beforeSend: function(){
+            $('.btnDoneLineBal[data-id="${satId}"]').prop('disabled', true);
+        },
+        success: function (response) {
+            $('.btnDoneLineBal[data-id="${satId}"]').prop('disabled', false);
+        },
+        error: function(xhr, status, error){
+            console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
+            $('.btnDoneLineBal[data-id="${satId}"]').prop('disabled', false);
+        }
+    });
 }

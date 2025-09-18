@@ -41,4 +41,14 @@ class CommonService implements CommonServiceInterface
         return array_merge($operator_details, $operator_details_subcon);
         
     }
+
+    public function getUserList(array $param){
+        $conditions = array(
+            "IN:fkPosition" => $param['fkPosition'],
+            "IN:fkDivision" => $param['fkDivision']
+        );
+
+        $users = $this->systemoneRepository->getHRIS($conditions);
+        return $users;
+    }
 }

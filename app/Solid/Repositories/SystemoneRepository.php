@@ -15,6 +15,7 @@ use App\Solid\Repositories\Interfaces\SystemoneRepositoryInterface;
 class SystemoneRepository implements SystemoneRepositoryInterface
 {
     public function getHRIS(array $conditions){
+
         return SystemoneHRIS::WhereConditions($conditions)->get();
     }
 

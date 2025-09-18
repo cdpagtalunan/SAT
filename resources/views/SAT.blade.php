@@ -248,12 +248,6 @@
                                 <input type="text"class="form-control" id="txtOutputPerHr" name="output_per_hr" readonly>
                             </div>
                         </div>
-                        {{-- <div class="col-sm-3">
-                            <div class="input-group">
-                                <span class="input-group-text w-50">PPC Output/hr</span>
-                                <input type="text"class="form-control" id="txtPPCOutputPerHr" name="ppc_output_per_hr">
-                            </div>
-                        </div> --}}
                     </div>
                     <div class="row mt-3">
                         <div class="col-sm-12">
@@ -514,37 +508,9 @@
         });
     });
 
-    // const editProcessList = (params) => {
-    //     let row = $('#tableProcessLists tbody tr').eq(params);
-    //     row.find('td').eq(1).attr('contenteditable', 'true').focus(); // Process column
-    //     row.find('td').eq(2).attr('contenteditable', 'true');  // Allowance column
-
-    //     let actionCell = row.find('td').eq(0);
-    //     actionCell.html(`
-    //         <button class="btn btn-sm btn-danger" title="Delete Process" onclick="dtProcessLists.row(${params}).remove().draw();">
-    //             <i class="fa-solid fa-trash"></i>
-    //         </button>
-    //          <button class="btn btn-sm btn-success" type="button" title="Save Process" onclick="saveProcessList(${params})">
-    //             <i class="fa-solid fa-check"></i>
-    //         </button>
-    //     `);
-    // }
-
-    // const saveProcessList = (params) => {
-    //     let row = $('#tableProcessLists tbody tr').eq(params);
-    //     row.find('td').eq(1).attr('contenteditable', 'false');
-    //     row.find('td').eq(2).attr('contenteditable', 'false');
-
-    //     // Restore the edit button
-    //     let actionCell = row.find('td').eq(0);
-    //     actionCell.html(`
-    //         <button class="btn btn-sm btn-danger" title="Delete Process" onclick="dtProcessLists.row(${params}).remove().draw();">
-    //             <i class="fa-solid fa-trash"></i>
-    //         </button>
-    //         <button class="btn btn-sm btn-secondary" type="button" title="Edit Process" onclick="editProcessList(${params})">
-    //             <i class="fa-solid fa-edit"></i>
-    //         </button>
-    //     `);
-    // }
+    $(document).on('click', '.btnDoneLineBal', function(){
+        let satId = $(this).data('id');
+        proceedForApproval(satId);
+    });
 </script>
 @endsection

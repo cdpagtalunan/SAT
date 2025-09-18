@@ -31,12 +31,24 @@
                         <p>SAT</p>
                     </a>
                 </li>
+                <li class="nav-item has-treeview">
+                    <a href="{{ route('sat_approval') }}" class="nav-link">
+                        <i class="nav-icon fa-regular fa-file-lines"></i>
+                        <p>SAT Approval</p>
+                    </a>
+                </li>
                 @if ($_SESSION['rapidx_user_id'] == 216)
                     <li class="nav-header font-weight-bold">&nbsp;Configuration</li>
                     <li class="nav-item has-treeview">
                             <a href="{{ route('dropdown_maintenance') }}" class="nav-link">
                             <i class="fa-solid fa-cog"></i>
                             <p>Dropdown Maintenance</p>
+                        </a>
+                    </li>
+                    <li class="nav-item has-treeview">
+                            <a href="{{ route('approver_list') }}" class="nav-link">
+                            <i class="fa-solid fa-cog"></i>
+                            <p>Approvers</p>
                         </a>
                     </li>
                 @endif

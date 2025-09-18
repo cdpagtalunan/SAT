@@ -68,4 +68,8 @@ class SATController extends Controller
         $data = $request->exeptTokenParameters();
         return $this->lineBalanceService->saveLineBalance($data);
     }
+
+    public function proceedForApproval(Request $request){
+        return $this->satService->proceedApproval($request->sat_id);
+    }
 }

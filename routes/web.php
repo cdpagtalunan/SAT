@@ -3,8 +3,8 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SATController;
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\ApproverController;
 use App\Http\Controllers\DropdownController;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -26,9 +26,17 @@ Route::middleware('verifySession')->group(function(){
         return view('SAT');
     })->name('sat');
 
+    Route::get('/sat_approval', function () {
+        return view('SAT_approval');
+    })->name('sat_approval');
+
     Route::get('/dropdown_maintenance', function () {
         return view('dropdown_maintenance');
     })->name('dropdown_maintenance');
+
+     Route::get('/approver_list', function () {
+        return view('approver_list');
+    })->name('approver_list');
 
     Route::controller(DropdownController::class)->group(function(){
         Route::get('/get_dropdown_list', 'getDropdownList')->name('get_dropdown_list');
@@ -48,9 +56,17 @@ Route::middleware('verifySession')->group(function(){
         Route::post('/done_obs', 'doneObs')->name('done_obs');
         Route::get('/dt_get_process_for_line_balance', 'dtGetProcessForLineBalance')->name('dt_get_process_for_line_balance');
         Route::post('/save_line_balance', 'saveLineBalance')->name('save_line_balance');
+        Route::post('/proceed_for_approval', 'proceedForApproval')->name('proceed_for_approval');
     });
 
     Route::controller(CommonController::class)->group(function(){
         Route::get('/get_operator_list', 'getOperatorList')->name('get_operator_list');
+    });
+
+    Route::controller(ApproverController::class)->group(function(){
+        Route::get('/dt_get_approver_list', 'dtGetApproverList')->name('dt_get_approver_list');
+        Route::get('/get_user_approver', 'getUserApprover')->name('get_user_approver');
+        Route::post('/save_approver', 'saveApprover')->name('save_approver');
+        Route::post('/delete_approver', 'deleteApprover')->name('delete_approver');
     });
 });

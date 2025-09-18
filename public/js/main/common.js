@@ -1,6 +1,7 @@
 $('.select2bs5').select2({
     // width: 'style',
-    theme: 'bootstrap-5'
+    theme: 'bootstrap-5',
+     minimumResultsForSearch: 0
 });
 
 const modalCloseResetForm = (formId, modal) => {

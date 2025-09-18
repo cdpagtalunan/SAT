@@ -4,9 +4,11 @@ namespace App\Providers;
 
 use App\Solid\Services\SATService;
 use App\Solid\Services\CommonService;
+use App\Solid\Services\ApproverService;
 use App\Solid\Services\DropdownService;
 use Illuminate\Support\ServiceProvider;
 use App\Solid\Services\LineBalanceService;
+use App\Solid\Repositories\ApproverRepository;
 use App\Solid\Repositories\DropdownRepository;
 use App\Solid\Repositories\SATHeaderRepository;
 use App\Solid\Repositories\SystemoneRepository;
@@ -15,8 +17,10 @@ use App\Solid\Repositories\AssemblyLineRepository;
 use App\Solid\Repositories\OperationLineRepository;
 use App\Solid\Services\Interfaces\SATServiceInterface;
 use App\Solid\Services\Interfaces\CommonServiceInterface;
+use App\Solid\Services\Interfaces\ApproverServiceInterface;
 use App\Solid\Services\Interfaces\DropdownServiceInterface;
 use App\Solid\Services\Interfaces\LineBalanceServiceInterface;
+use App\Solid\Repositories\Interfaces\ApproverRepositoryInterface;
 use App\Solid\Repositories\Interfaces\DropdownRepositoryInterface;
 use App\Solid\Repositories\Interfaces\SATHeaderRepositoryInterface;
 use App\Solid\Repositories\Interfaces\SystemoneRepositoryInterface;
@@ -43,6 +47,8 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SATProcessRepositoryInterface::class, SATProcessRepository::class);
         $this->app->bind(CommonServiceInterface::class, CommonService::class);
         $this->app->bind(SystemoneRepositoryInterface::class, SystemoneRepository::class);
+        $this->app->bind(ApproverServiceInterface::class, ApproverService::class);
+        $this->app->bind(ApproverRepositoryInterface::class, ApproverRepository::class);
     }
 
     /**
