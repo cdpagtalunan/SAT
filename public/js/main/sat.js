@@ -716,6 +716,7 @@ const proceedForApproval = (satId) => {
         },
         success: function (response) {
             $('.btnDoneLineBal[data-id="${satId}"]').prop('disabled', false);
+            dtSat.draw();
         },
         error: function(xhr, status, error){
             console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);

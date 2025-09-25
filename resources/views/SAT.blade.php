@@ -40,6 +40,7 @@
                                 <thead>
                                     <tr>
                                         <th>Action</th>
+                                        <th>Status</th>
                                         <th>Device Name</th>
                                         <th>Operations Line</th>
                                         <th>Assembly Line</th>
@@ -382,6 +383,7 @@
             fixedHeader: true,
             "columns":[
                 { "data" : "actions", orderable:false, searchable:false },
+                { "data" : "status" },
                 { "data" : "device_name" },
                 { "data" : "operation_line" },
                 { "data" : "assembly_line" },
@@ -510,7 +512,17 @@
 
     $(document).on('click', '.btnDoneLineBal', function(){
         let satId = $(this).data('id');
-        proceedForApproval(satId);
+         Swal.fire({
+            // title: "Do you want to proceed for approval?",
+            text: "Do you want to proceed for heads approval?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: "Save",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                proceedForApproval(satId);
+            }
+        })
     });
 </script>
 @endsection

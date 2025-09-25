@@ -7,4 +7,5 @@ interface ApproverRepositoryInterface
     public function getWithRelationsAndConditions(array $relations, array $conditions);
     public function update(int $id, array $data);
     public function delete(int $id);
+    public function insertApproval(array $data);
 }

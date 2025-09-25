@@ -1,14 +1,15 @@
 <?php
 namespace App\Solid\Repositories;
 
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Auth;
+use App\Models\SatApproval;
+use App\Models\ApproverList;
 
 /**
  * Import Interfaces
  */
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
 use App\Solid\Repositories\Interfaces\ApproverRepositoryInterface;
-use App\Models\ApproverList;
 
 class ApproverRepository implements ApproverRepositoryInterface
 {
@@ -26,6 +27,9 @@ class ApproverRepository implements ApproverRepositoryInterface
 
     public function delete(int $id){
         return ApproverList::where('id', $id)->delete();
+    }
 
+    public function insertApproval(array $data){
+        return SatApproval::insert($data);
     }
 }

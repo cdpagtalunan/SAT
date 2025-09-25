@@ -1,5 +1,7 @@
 <?php
 namespace App\Solid\Services;
+
+use App\Solid\Repositories\Interfaces\ApproverRepositoryInterface;
 use DataTables;
 use Illuminate\Support\Facades\DB;
 use App\Solid\Services\Interfaces\SATServiceInterface;
@@ -7,7 +9,6 @@ use App\Solid\Repositories\Interfaces\SATHeaderRepositoryInterface;
 // Service implements the ServiceInterface, responsible for saving users.
 
 use App\Solid\Repositories\Interfaces\SATProcessRepositoryInterface;
-use App\Solid\Repositories\Interfaces\SATApproverRepositoryInterface;
 date_default_timezone_set('Asia/Manila');
 class SATService implements SATServiceInterface
 {
@@ -19,7 +20,7 @@ class SATService implements SATServiceInterface
     public function __construct(
         SATHeaderRepositoryInterface $satHeaderRepository,
         SATProcessRepositoryInterface $satProcessRepository,
-        SATApproverRepositoryInterface $satApproverRepository
+        ApproverRepositoryInterface $satApproverRepository
     )
     {
         $this->satHeaderRepository = $satHeaderRepository;
@@ -122,11 +123,32 @@ class SATService implements SATServiceInterface
                     $sat_process = $this->satProcessRepository->getWithRelationsConditions($relations, $conditions);
                     $collections = collect($sat_process)->where('lb_no_operator', null)->count();
                     $result .= "<button class='btn btn-sm btn-primary btnAddLineBalance' data-id='{$data->id}' title='Add Line Balance'><i class='fa-solid fa-circle-info'></i></button>";
-                    if($collections > 0){
-                        $disabled = 'disabled';
-                        $msg = "Complete line balance";
+                    if($collections == 0){
+                        $result .= "<button class='btn btn-sm btn-success btnDoneLineBal ml-1' data-id='{$data->id}' title='Proceed Approval'><i class='fa-solid fa-check'></i></button>";
                     }
-                    $result .= "<button class='btn btn-sm btn-success btnDoneLineBal ml-1' data-id='{$data->id}' title='{$msg}' {$disabled}><i class='fa-solid fa-check'></i></button>";
+                    break;
+                default:
+                    $result .= "<button class='btn btn-info btn-sm btnSeeDetail' data-id='{$data->id}' title='See Details'><i class='fa-solid fa-circle-info'></i></button>";
+                    break;
+            }
+            $result .= "</center>";
+            return $result;
+        })
+        ->addColumn('status', function($data){
+            $result = "";
+            $result .= "<center>";
+            switch ($data->status) {
+                case 0:
+                    $result .= "<span class='badge bg-warning'>For Edit</span>";
+                    break;
+                case 1:
+                    $result .= "<span class='badge bg-info'>For Observation</span>";
+                    break;
+                case 2:
+                    $result .= "<span class='badge bg-info'>For Line Balance</span>";
+                    break;
+                case 3:
+                    $result .= "<span class='badge bg-info'>For Heads Approval</span>";
                     break;
                 default:
                     break;
@@ -134,7 +156,7 @@ class SATService implements SATServiceInterface
             $result .= "</center>";
             return $result;
         })
-        ->rawColumns(['actions'])
+        ->rawColumns(['actions', 'status'])
         ->make(true);
     }
 
@@ -330,14 +352,20 @@ class SATService implements SATServiceInterface
             $header_update_array = array(
                 'status' => 3,
             );
-            $this->satHeaderRepository->update($header_array, $satId);
+            $this->satHeaderRepository->update($header_update_array, $satId);
 
-            
-            // $this->satApproverRepository->
-            // DB::commit();
-        }catch(Exemption $e){
+            $approval_array = array(
+                'sat_header_id' => $satId
+            );
+            $this->satApproverRepository->insertApproval($approval_array);
+
+            DB::commit();
+            return response()->json([
+                'result' => true
+            ]);
+        }catch(Exception $e){
             DB::rollback();
             return $e; 
         }
     }
-}
+} 
