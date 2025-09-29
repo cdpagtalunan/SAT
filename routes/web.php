@@ -68,5 +68,9 @@ Route::middleware('verifySession')->group(function(){
         Route::get('/get_user_approver', 'getUserApprover')->name('get_user_approver');
         Route::post('/save_approver', 'saveApprover')->name('save_approver');
         Route::post('/delete_approver', 'deleteApprover')->name('delete_approver');
+        
+        Route::get('/dt_sat_approval', 'dtSatApproval')->name('dt_sat_approval');
+        Route::get('/get_sat_details', 'getSatDetails')->name('get_sat_details');
+        Route::post('/approve_sat', 'approveSat')->name('approve_sat');
     });
 });

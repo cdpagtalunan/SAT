@@ -148,7 +148,19 @@ class SATService implements SATServiceInterface
                     $result .= "<span class='badge bg-info'>For Line Balance</span>";
                     break;
                 case 3:
-                    $result .= "<span class='badge bg-info'>For Heads Approval</span>";
+                    $conditions = array(
+                        'sat_header_id' => $data->id,
+                        'deleted_at'    => null
+                    );
+                    $relations = array();
+                    $satApproval = $this->satApproverRepository->getApprovalWithRelationAndConditions($relations, $conditions);
+                    $collection = collect($satApproval)->first();
+                    if(is_null($collection->approver_1)){
+                        $result .= "<span class='badge bg-info'>For Engineering Section Head</span>";
+                    }
+                    else if (is_null($collection->approver_2)){
+                        $result .= "<span class='badge bg-info'>For Production Section Head</span>";
+                    }
                     break;
                 default:
                     break;

@@ -41,6 +41,7 @@ class VerifySession
         }
 
         $request->session()->put('rapidx_id', $_SESSION['rapidx_user_id']);
+        $request->session()->put('employee_number', $_SESSION['rapidx_employee_number']);
         return $next($request);
     }
 }

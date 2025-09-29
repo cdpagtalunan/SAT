@@ -32,4 +32,17 @@ class ApproverRepository implements ApproverRepositoryInterface
     public function insertApproval(array $data){
         return SatApproval::insert($data);
     }
+
+    public function getApprovalWithRelationAndConditions(array $relations, array $conditions){
+        return SatApproval::with($relations)->whereConditions($conditions)->get();
+    }
+
+    public function updateSatApproval(int $id, array $data){
+        return SatApproval::where('id', $id)->update($data);
+    }
+
+    public function getApprovalById(int $id){
+        return SatApproval::where('id', $id)->first();
+        
+    }
 }

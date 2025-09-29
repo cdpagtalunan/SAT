@@ -6,4 +6,7 @@ interface ApproverServiceInterface
     public function saveApprover(array $data);
     public function dtGetApprovers();
     public function deleteApprover(int $id);
+    public function dtSatApproval();
+    public function getSatDetails(int $id);
+    public function approveSat(array $data);
 }

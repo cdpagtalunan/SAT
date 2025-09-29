@@ -1,6 +1,6 @@
 @extends('layouts.admin_layout')
 
-@section('title', 'Home')
+@section('title', 'Approvals')
 @section('content_page')
 <div class="content-wrapper">
     <section class="content-header">
@@ -44,8 +44,50 @@
 @section('js_content')
 <script src="@php echo asset("public/js/main/satApproval.js?".date("YmdHis")) @endphp"></script>
 <script>
+    let dtSatApproval;
     $(document).ready(function () {
-        
+        dtSatApproval = $("#tableSatApproval").DataTable({
+            "processing" : true,
+            "serverSide" : true,
+            "ajax" : {
+                url: "{{ route('dt_sat_approval') }}"
+                // data: function (param){
+                //     param.po = $("#id").val();
+                // }
+            },
+            fixedHeader: true,
+            "columns":[
+                { "data" : "action", orderable:false, searchable:false },
+                { "data" : "sat_header_id" },
+                { "data" : "sat_header_id" },
+                { "data" : "sat_header_id" },
+                { "data" : "sat_header_id" },
+            ],
+        });
     });
+
+    $(document).on('click', '.btnSeeDetails', function(){
+        let satId = $(this).data('satId');
+
+        getSatDetails(satId);
+    });
+
+    $(document).on('click', '.btnApprove', function(){
+        let approverType = $(this).data('approver');
+        let approvalId = $(this).data('approveId');
+        
+        Swal.fire({
+            // title: "Do you want to proceed to observation?",
+            text: "Are you sure you want approve this?",
+            icon: 'question',
+            showCancelButton: true,
+            confirmButtonText: "Save",
+        }).then((result) => {
+            /* Read more about isConfirmed, isDenied below */
+            if (result.isConfirmed) {
+                satProcessApproval(approvalId,approverType);
+            }
+        })
+    })
 </script>
 @endsection

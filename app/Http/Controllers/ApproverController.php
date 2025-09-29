@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Http\Requests\ApproverRequest;
+use App\Http\Requests\ApproveProcessRequest;
 use App\Solid\Services\Interfaces\CommonServiceInterface;
 use App\Solid\Services\Interfaces\ApproverServiceInterface;
 
@@ -36,4 +37,18 @@ class ApproverController extends Controller
     public function deleteApprover(Request $request){
         return $this->approverService->deleteApprover($request->ap_id);
     }
+
+    public function dtSatApproval(Request $request){
+        return $this->approverService->dtSatApproval();
+    }
+
+    public function getSatDetails(Request $request){
+        return $this->approverService->getSatDetails($request->sat_id);
+    }
+
+    public function approveSat(ApproveProcessRequest $request){
+        $data = $request->filterParameters();
+        return $this->approverService->approveSat($data);
+    }
+
 }
