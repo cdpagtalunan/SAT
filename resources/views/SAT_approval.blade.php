@@ -27,6 +27,7 @@
                             <thead>
                                 <tr>
                                     <th>Action</th>
+                                    <th>Status</th>
                                     <th>Device Name</th>
                                     <th>Operations Line</th>
                                     <th>Assembly Line</th>
@@ -58,10 +59,11 @@
             fixedHeader: true,
             "columns":[
                 { "data" : "action", orderable:false, searchable:false },
-                { "data" : "sat_header_id" },
-                { "data" : "sat_header_id" },
-                { "data" : "sat_header_id" },
-                { "data" : "sat_header_id" },
+                { "data" : "status" },
+                { "data" : "sat_details.device_name" },
+                { "data" : "sat_details.operation_line" },
+                { "data" : "sat_details.assembly_line" },
+                { "data" : "sat_details.qsat" },
             ],
         });
     });

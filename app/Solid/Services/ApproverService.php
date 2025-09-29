@@ -87,6 +87,16 @@ class ApproverService implements ApproverServiceInterface
     }
 
     public function dtSatApproval(){
+        $relations_approver = array(
+            'employeeDetails'
+        );
+        $condition_approver = array(
+            'emp_id' => session('employee_number'),
+            'deleted_at' => null
+        );
+        $user_approver = $this->approverRepository->getWithRelationsAndConditions($relations_approver, $condition_approver);
+        
+
         $conditions = array(
             'deleted_at' => null,
         );
@@ -94,24 +104,16 @@ class ApproverService implements ApproverServiceInterface
             'sat_details'
         );
         $approval_list = $this->approverRepository->getApprovalWithRelationAndConditions($relations, $conditions);
+        
+        $result = $approval_list->filter(function ($item) use ($user_approver) {
+            return (is_null($item['approver_1']) && $user_approver->contains('approval_type', '1'))
+            || (is_null($item['approver_2']) && $user_approver->contains('approval_type', '2'));
+        })->values();
 
-        $relations_approver = array(
-            'employeeDetails'
-        );
-        $condition_approver = array(
-            'emp_id' => session('employee_number')
-        );
-        $user_approver = $this->approverRepository->getWithRelationsAndConditions($relations_approver, $condition_approver);
-
-        // return response()->json([
-        //     'user' => $user_approver,
-        //     'approval_list' => $approval_list
-        // ], 500);
         return DataTables::of($approval_list)
         ->addColumn('action', function($approval_list) use ($user_approver){
             $result = "";
             $result .= "<center>";
-            // $result .= "<button class='btn btn-sm btn-info btnSeeDetails' data-sat-id='{$approval_list->sat_header_id}' title='See SAT Details'><i class='fa-solid fa-circle-info'></i></button>";
             if(is_null($approval_list->approver_1)){
                 $result .= "<button class='btn btn-sm btn-success btnApprove' data-approver='1' data-approve-id='{$approval_list->id}' title='Approve SAT'><i class='fa-solid fa-check'></i></button>";
             }
@@ -121,7 +123,19 @@ class ApproverService implements ApproverServiceInterface
             $result .= "</center>";
             return $result;
         })
-        ->rawColumns(['action'])
+        ->addColumn('status', function($approval_list){
+            $result = "";
+            $result .= "<center>";
+            if(is_null($approval_list->approver_1)){
+                $result .= " <span class='badge bg-primary'>For Engineering Section Head</span>";
+            }
+            else if(is_null($approval_list->approver_2)){
+                $result .= " <span class='badge bg-primary'>For Production Section Head</span>";
+            }
+            $result .= "</center>";
+            return $result;
+        })
+        ->rawColumns(['action', 'status'])
         ->make(true);
     }
 
