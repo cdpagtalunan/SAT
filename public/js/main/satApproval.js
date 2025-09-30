@@ -9,6 +9,8 @@ const getSatDetails = (satId) => {
         beforeSend: function(){
         },
         success: function (response) {
+            $('#modalViewSatDetails').modal('show');
+
         },
         error: function(xhr, status, error){
             console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);

@@ -88,3 +88,112 @@ const obsSAT = () => {
     $('#obsSAT').show();
 
 }
+
+const drawViewSatObservation = (satId) => {
+    dtViewSatObservation = $("#tableViewSATObservation").DataTable({
+        "processing": true,
+        "serverSide": true,
+        "ordering"  : false,
+        "bDestroy"  : true,
+        "info"      : false,
+        "paging"    : false,
+        "searching" : false,
+        "ajax"      : {
+            url : "dt_get_process_for_observation",
+            data: function (param){
+                param.id = satId;
+            }
+        },
+        "fixedHeader": true,
+        "columns"    : [
+            // { "data" : "actions", orderable:false, searchable:false },
+            { "data" : "process_name" },
+            { "data" : "operator_name" },
+            { "data" : "obs_1" },
+            { "data" : "obs_2" },
+            { "data" : "obs_3" },
+            { "data" : "obs_4" },
+            { "data" : "obs_5" },
+            { "data" : "observed_time" },
+            { "data" : "allowance" },
+            { "data" : "nt" },
+            { "data" : "st" },
+            { "data" : "uph" },
+        ],
+        "columnDefs": [
+            {"className": "dt-center", "targets": "_all"},
+            {
+                "targets"       : [1,2,3,4,5,6],
+                "data"          : null,
+                "defaultContent": "--"
+            },
+        ],
+        'drawCallback': function( settings ) {
+            let dtApi = this.api();
+            let data = dtApi.data();
+            let totalNt = 0;
+            let totalSt = 0;
+                console.log(data);
+            
+            data.each(function(rowData, index) {
+                totalNt =parseFloat(totalNt) + parseFloat(rowData.nt);
+                if(rowData.st){
+                    totalSt =parseFloat(totalSt) + parseFloat(rowData.st);
+                }
+
+            });
+
+
+            let roundedUpNt = totalNt.toFixed(2);
+            let roundedUpSt = totalSt.toFixed(2);   
+            $('#totalNormalTimeView').html(roundedUpNt);
+            $('#totalStandardTimeView').html(roundedUpSt);
+        }
+    });
+
+    dtViewLineBalance = $("#tableViewLineBalance").DataTable({
+        "processing" : true,
+        "serverSide" : true,
+        "paging": false,
+        "info" : false,
+        "ordering": false,
+        "bDestroy"  : true,
+        "ajax" : {
+            url: "dt_get_process_for_line_balance",
+            data: function (param){
+                param.id = satId;
+            }
+        },
+        fixedHeader: true,
+        "columns":[
+            { "data" : "process_name" },
+            { "data" : "nt" },
+            { 
+                "data" : "lb_no_operator", 
+            },
+            { "data" : "tact" },
+            { "data" : "lb_uph" },
+        ],
+        "columnDefs": [
+            {"className": "dt-center", "targets": "_all"},
+        ],
+        'drawCallback': function( settings ) {
+            let dtApi = this.api();
+            let data = dtApi.data();
+            let sumStationSAT = 0;
+            data.each(function(rowData, index) {
+                sumStationSAT = parseFloat(sumStationSAT) + parseFloat(rowData.nt);
+            });
+            let roundedUp = sumStationSAT.toFixed(2);
+            $('#TtlStationSatView').html(roundedUp);
+
+            let totalOperators = 0;
+            $('#tableViewLineBalance tbody tr').each(function() {
+                let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
+                totalOperators += cellValue;
+               
+            });
+            $('#ttlNoOperatorView').text(totalOperators);
+        }
+    });//end of 
+}

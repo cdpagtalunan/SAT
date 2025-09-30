@@ -41,6 +41,8 @@
         </div>
     </section>
 </div>
+
+@include('components.view_sat_modal')
 @endsection
 @section('js_content')
 <script src="@php echo asset("public/js/main/satApproval.js?".date("YmdHis")) @endphp"></script>
@@ -68,10 +70,22 @@
         });
     });
 
-    $(document).on('click', '.btnSeeDetails', function(){
-        let satId = $(this).data('satId');
+    $(document).on('click', '.btnSeeSatDetails', function(){
+        let satId = $(this).data('id');
+        let assemblyLine = $(this).data('assemblyLine');
+        let deviceName = $(this).data('deviceName');
+        let noOfPins = $(this).data('noOfPins');
+        let operationLine = $(this).data('operationLine');
+        let qsat = $(this).data('qsat');
 
+        $('#txtSatDeviceNameView').val(deviceName)
+        $('#txtOpLineView').val(operationLine)
+        $('#txtAssyLineView').val(assemblyLine)
+        $('#txtNoPinsView').val(noOfPins)
+        $('#txtQsatView').val(qsat)
         getSatDetails(satId);
+        drawViewSatObservation(satId)
+        $('#modalViewSatDetails').modal('show');
     });
 
     $(document).on('click', '.btnApprove', function(){

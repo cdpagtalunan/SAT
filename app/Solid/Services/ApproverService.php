@@ -114,6 +114,15 @@ class ApproverService implements ApproverServiceInterface
         ->addColumn('action', function($approval_list) use ($user_approver){
             $result = "";
             $result .= "<center>";
+            $result .= "<button class='btn btn-sm btn-info btnSeeSatDetails mr-1'
+            data-id='{$approval_list->sat_header_id}' 
+            data-assembly-line='{$approval_list->sat_details->assembly_line}'
+            data-device-name='{$approval_list->sat_details->device_name}'
+            data-no-of-pins='{$approval_list->sat_details->no_of_pins}'
+            data-operation-line='{$approval_list->sat_details->operation_line}'
+            data-qsat='{$approval_list->sat_details->qsat}'
+            >
+            <i class='fa-solid fa-circle-info'></i></button>";
             if(is_null($approval_list->approver_1)){
                 $result .= "<button class='btn btn-sm btn-success btnApprove' data-approver='1' data-approve-id='{$approval_list->id}' title='Approve SAT'><i class='fa-solid fa-check'></i></button>";
             }
@@ -178,9 +187,5 @@ class ApproverService implements ApproverServiceInterface
             DB::rollback();
             return $e->getMessage();
         }
-    }
-
-    public function getSatDetails(int $satId){
-        return $satId;
     }
 }

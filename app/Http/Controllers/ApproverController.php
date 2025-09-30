@@ -42,10 +42,6 @@ class ApproverController extends Controller
         return $this->approverService->dtSatApproval();
     }
 
-    public function getSatDetails(Request $request){
-        return $this->approverService->getSatDetails($request->sat_id);
-    }
-
     public function approveSat(ApproveProcessRequest $request){
         $data = $request->filterParameters();
         return $this->approverService->approveSat($data);
