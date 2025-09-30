@@ -105,6 +105,7 @@ class ApproverService implements ApproverServiceInterface
         );
         $approval_list = $this->approverRepository->getApprovalWithRelationAndConditions($relations, $conditions);
         
+        $approval_list = collect($approval_list)->where('sat_details.status', 3)->values();
         $result = $approval_list->filter(function ($item) use ($user_approver) {
             return (is_null($item['approver_1']) && $user_approver->contains('approval_type', '1'))
             || (is_null($item['approver_2']) && $user_approver->contains('approval_type', '2'));
@@ -140,6 +141,9 @@ class ApproverService implements ApproverServiceInterface
             }
             else if(is_null($approval_list->approver_2)){
                 $result .= " <span class='badge bg-primary'>For Production Section Head</span>";
+            }
+            else{
+                $result .= " <span class='badge bg-success'>Approved</span>";
             }
             $result .= "</center>";
             return $result;

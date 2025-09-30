@@ -152,12 +152,13 @@ const drawViewSatObservation = (satId) => {
     });
 
     dtViewLineBalance = $("#tableViewLineBalance").DataTable({
-        "processing" : true,
-        "serverSide" : true,
-        "paging": false,
-        "info" : false,
-        "ordering": false,
+        "processing": true,
+        "serverSide": true,
+        "paging"    : false,
+        "info"      : false,
+        "ordering"  : false,
         "bDestroy"  : true,
+        "searching" : false,
         "ajax" : {
             url: "dt_get_process_for_line_balance",
             data: function (param){
