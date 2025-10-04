@@ -300,7 +300,7 @@
     </div>
 </div>
 
-
+@include('components.view_sat_modal')
 @endsection
 @section('js_content')
 
@@ -524,5 +524,26 @@
             }
         })
     });
+
+    $(document).on('click', '.btnSeeDetail', function(){
+        let satId = $(this).data('id');
+        let assy = $(this).data('assy')
+        let device = $(this).data('device')
+        let noPins = $(this).data('noPins')
+        let opLine = $(this).data('opLine')
+        let qsat = $(this).data('qsat')
+        $('#txtSatDeviceNameView').val(device)
+        $('#txtOpLineView').val(opLine)
+        $('#txtAssyLineView').val(assy)
+        $('#txtNoPinsView').val(noPins)
+        $('#txtQsatView').val(qsat)
+        drawViewSatObservation(satId);
+        $('#modalViewSatDetails').modal('show');
+    });
+
+    $(document).on('click', '.btnExport', function(){
+        let satId = $(this).data('id');
+        window.open("{{ route('export_sat') }}?id=" + satId, '_blank');
+    })
 </script>
 @endsection

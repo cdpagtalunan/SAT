@@ -15,7 +15,7 @@ class CreateSatHeadersTable extends Migration
     {
         Schema::create('sat_headers', function (Blueprint $table) {
             $table->id();
-            $table->smallInteger('status')->default(0)->comment="0-For edit, 1-Observation, 2-Line balance";
+            $table->smallInteger('status')->default(0)->comment="0-For edit, 1-Observation, 2-Line balance, 3-Approval, 4-Done";
             $table->string('device_name');
             $table->string('operation_line');
             $table->string('assembly_line');
@@ -23,6 +23,8 @@ class CreateSatHeadersTable extends Migration
             $table->decimal('qsat', 10, 2);
             $table->string('validated_by')->nullable();
             $table->string('validated_at')->nullable();
+            $table->string('line_bal_by')->nullable();
+            $table->string('line_bal_at')->nullable();
             $table->decimal('lb_ppc_output_per_hr',8,2)->nullable();
             $table->string('created_by');
             $table->string('updated_by')->nullable();

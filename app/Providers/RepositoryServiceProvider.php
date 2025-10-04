@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use App\Solid\Services\SATService;
 use App\Solid\Services\CommonService;
+use App\Solid\Services\ExportService;
 use App\Solid\Services\ApproverService;
 use App\Solid\Services\DropdownService;
 use Illuminate\Support\ServiceProvider;
@@ -17,6 +18,7 @@ use App\Solid\Repositories\AssemblyLineRepository;
 use App\Solid\Repositories\OperationLineRepository;
 use App\Solid\Services\Interfaces\SATServiceInterface;
 use App\Solid\Services\Interfaces\CommonServiceInterface;
+use App\Solid\Services\Interfaces\ExportServiceInterface;
 use App\Solid\Services\Interfaces\ApproverServiceInterface;
 use App\Solid\Services\Interfaces\DropdownServiceInterface;
 use App\Solid\Services\Interfaces\LineBalanceServiceInterface;
@@ -49,6 +51,7 @@ class RepositoryServiceProvider extends ServiceProvider
         $this->app->bind(SystemoneRepositoryInterface::class, SystemoneRepository::class);
         $this->app->bind(ApproverServiceInterface::class, ApproverService::class);
         $this->app->bind(ApproverRepositoryInterface::class, ApproverRepository::class);
+        $this->app->bind(ExportServiceInterface::class, ExportService::class);
     }
 
     /**

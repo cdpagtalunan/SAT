@@ -31,6 +31,8 @@ class LineBalanceService implements LineBalanceServiceInterface
             $header_data_array = array(
                 // 'lb_ppc_output_per_hr' => $data['ppc_output_per_hr'],
                 'updated_by' => session('rapidx_id'),
+                'line_bal_by' => session('rapidx_id'),
+                'line_bal_date' => NOW(),
             );
             $this->satHeader->update($header_data_array, $data['sat_header_id']);
 

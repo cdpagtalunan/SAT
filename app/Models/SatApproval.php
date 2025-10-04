@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\SystemoneHRIS;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class SatApproval extends Model
 {
@@ -14,6 +15,13 @@ class SatApproval extends Model
 
     public function sat_details(){
         return $this->hasOne(SatHeader::class, 'id', 'sat_header_id');
+    }
+
+    public function approver1Details(){
+        return $this->hasOne(SystemoneHRIS::class, 'EmpNo', 'approver_1');
+    }
+     public function approver2Details(){
+        return $this->hasOne(SystemoneHRIS::class, 'EmpNo', 'approver_2');
     }
 
     public function ScopeWhereConditions($query, $condition){

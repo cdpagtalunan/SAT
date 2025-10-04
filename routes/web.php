@@ -3,6 +3,7 @@
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SATController;
 use App\Http\Controllers\CommonController;
+use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ApproverController;
 use App\Http\Controllers\DropdownController;
 
@@ -72,5 +73,9 @@ Route::middleware('verifySession')->group(function(){
         Route::get('/dt_sat_approval', 'dtSatApproval')->name('dt_sat_approval');
         Route::get('/get_sat_details', 'getSatDetails')->name('get_sat_details');
         Route::post('/approve_sat', 'approveSat')->name('approve_sat');
+    });
+
+    Route::controller(ExportController::class)->group(function(){
+        Route::get('/export_sat', 'exportSat')->name('export_sat');
     });
 });

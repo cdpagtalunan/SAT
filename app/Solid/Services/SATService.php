@@ -127,8 +127,24 @@ class SATService implements SATServiceInterface
                         $result .= "<button class='btn btn-sm btn-success btnDoneLineBal ml-1' data-id='{$data->id}' title='Proceed Approval'><i class='fa-solid fa-check'></i></button>";
                     }
                     break;
+                case 4:
+                    $result .= "<button class='btn btn-info btn-sm btnSeeDetail' data-id='{$data->id}' 
+                    data-assy='{$data->assembly_line}' 
+                    data-device='{$data->device_name}' 
+                    data-no-pins='{$data->no_of_pins}' 
+                    data-op-line='{$data->operation_line}' 
+                    data-qsat='{$data->qsat}' 
+                    title='See Details'><i class='fa-solid fa-circle-info'></i></button>";
+                    $result .= "<button class='btn btn-sm btn-secondary btnExport ml-1' data-id='{$data->id}' title='Export SAT'><i class='fa-solid fa-file-excel'></i></button>";
+                    break;
                 default:
-                    $result .= "<button class='btn btn-info btn-sm btnSeeDetail' data-id='{$data->id}' title='See Details'><i class='fa-solid fa-circle-info'></i></button>";
+                    $result .= "<button class='btn btn-info btn-sm btnSeeDetail' data-id='{$data->id}' 
+                    data-assy='{$data->assembly_line}' 
+                    data-device='{$data->device_name}' 
+                    data-no-pins='{$data->no_of_pins}' 
+                    data-op-line='{$data->operation_line}' 
+                    data-qsat='{$data->qsat}' 
+                    title='See Details'><i class='fa-solid fa-circle-info'></i></button>";
                     break;
             }
             $result .= "</center>";
@@ -162,6 +178,9 @@ class SATService implements SATServiceInterface
                         $result .= "<span class='badge bg-info'>For Production Section Head</span>";
                     }
                     break;
+                case 4:
+                    $result .= "<span class='badge bg-success'>Approved</span>";
+                    break; 
                 default:
                     break;
             }

@@ -31,5 +31,6 @@ class CommonController extends Controller
     public function getOperatorList(Request $request){
         return $this->commonService->getOperators();
     }
+
 }
  
