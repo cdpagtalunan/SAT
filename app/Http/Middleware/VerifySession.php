@@ -2,16 +2,22 @@
 
 namespace App\Http\Middleware;
 
-use App\Solid\Repositories\Interfaces\ApproverRepositoryInterface;
 use Closure;
 use Illuminate\Http\Request;
+use App\Solid\Repositories\Interfaces\UserRepositoryInterface;
+use App\Solid\Repositories\Interfaces\ApproverRepositoryInterface;
 
 class VerifySession
 {
     protected $approverRepository;
+    protected $userRepository;
     
-    public function __construct( ApproverRepositoryInterface $approverRepository) {
+    public function __construct( 
+        ApproverRepositoryInterface $approverRepository,
+        UserRepositoryInterface $userRepository
+    ) {
         $this->approverRepository = $approverRepository;
+        $this->userRepository = $userRepository;
     }
 
     /**
@@ -46,13 +52,30 @@ class VerifySession
             // Otherwise, do a normal redirect
             return redirect('../');
         }
+        $request->session()->put('is_approver', false);
+        $request->session()->put('is_admin', false);
+        $request->session()->put('is_checker', false);
+
 
         $approver = $this->approverRepository->getWithRelationsAndConditions(array(), [
             'emp_id' => $_SESSION['rapidx_employee_number'],
             'deleted_at' => null
         ])->first();
 
-        $request->session()->put('is_approver', false);
+        $conditions= array(
+            'rapidx_emp_id' => $_SESSION['rapidx_user_id'],
+            'deleted_at' => null
+        );
+        $user_access_details = $this->userRepository->getSATWithRelationsAndCondition(array(), $conditions)->first();
+
+        if(isset($user_access_details)){
+            if($user_access_details->admin == 1){
+                $request->session()->put('is_admin', true);
+            }
+            if($user_access_details->checker == 1){
+                $request->session()->put('is_checker', true);
+            }
+        }
         if($approver){
             $request->session()->put('is_approver', true);
         }

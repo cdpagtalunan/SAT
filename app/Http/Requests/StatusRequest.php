@@ -13,7 +13,10 @@ class StatusRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if(session('is_admin')){
+            return true;
+        }
+        return false;
     }
 
     /**

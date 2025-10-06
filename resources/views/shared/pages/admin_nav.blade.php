@@ -40,9 +40,9 @@
                     </li>
                 @endif
                 
-                @if ($_SESSION['rapidx_user_id'] == 216)
+                @if (session('is_admin'))
                     <li class="nav-header font-weight-bold">&nbsp;Configuration</li>
-                     <li class="nav-item has-treeview">
+                    <li class="nav-item has-treeview">
                             <a href="{{ route('user') }}" class="nav-link">
                             <i class="fa-solid fa-cog"></i>
                             <p>Users</p>

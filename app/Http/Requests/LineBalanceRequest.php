@@ -13,7 +13,10 @@ class LineBalanceRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if(session('is_checker')){
+            return true;
+        }
+        return false;
     }
 
     /**
