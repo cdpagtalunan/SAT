@@ -42,6 +42,12 @@
                 
                 @if ($_SESSION['rapidx_user_id'] == 216)
                     <li class="nav-header font-weight-bold">&nbsp;Configuration</li>
+                     <li class="nav-item has-treeview">
+                            <a href="{{ route('user') }}" class="nav-link">
+                            <i class="fa-solid fa-cog"></i>
+                            <p>Users</p>
+                        </a>
+                    </li>
                     <li class="nav-item has-treeview">
                             <a href="{{ route('dropdown_maintenance') }}" class="nav-link">
                             <i class="fa-solid fa-cog"></i>
@@ -54,6 +60,7 @@
                             <p>Approvers</p>
                         </a>
                     </li>
+                    
                 @endif
 
                 

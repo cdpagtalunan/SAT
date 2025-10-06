@@ -2,6 +2,7 @@
 
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\SATController;
+use App\Http\Controllers\UserController;
 use App\Http\Controllers\CommonController;
 use App\Http\Controllers\ExportController;
 use App\Http\Controllers\ApproverController;
@@ -43,6 +44,10 @@ Route::middleware('verifySession')->group(function(){
         return view('approver_list');
     })->name('approver_list');
 
+    Route::get('/user', function () {
+        return view('user_management');
+    })->name('user');
+
     Route::controller(DropdownController::class)->group(function(){
         Route::get('/get_dropdown_list', 'getDropdownList')->name('get_dropdown_list');
         Route::get('/dt_get_dropdown_items', 'dtGetDropdownItems')->name('dt_get_dropdown_items');
@@ -81,5 +86,12 @@ Route::middleware('verifySession')->group(function(){
 
     Route::controller(ExportController::class)->group(function(){
         Route::get('/export_sat', 'exportSat')->name('export_sat');
+    });
+
+    Route::controller(UserController::class)->group(function(){
+        Route::get('/dt_get_users', 'dtGetUsers')->name('dt_get_users');
+        // Route::post('/save_checker', 'saveChecker')->name('save_checker');
+        // Route::post('/save_admin', 'saveAdmin')->name('save_admin');
+        Route::post('/update_status', 'updateStatus')->name('update_status');
     });
 });

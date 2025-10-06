@@ -2,14 +2,20 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use App\Models\RapidxUser;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
-class RapidxUser extends Model
+class User extends Model
 {
     use HasFactory;
-    protected $connection = "mysql_rapidx";
-    protected $table = "users";
+
+    protected $table = 'users';
+    protected $connection = 'mysql';
+
+    public function rapidx_user(){
+        return $this->hasOne(RapidxUser::class, 'id', 'rapidx_emp_id');
+    }
 
     public function ScopeWhereConditions($query, $condition){
         foreach ($condition as $key => $value) {
