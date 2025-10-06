@@ -20,7 +20,7 @@ class ApproverRepository implements ApproverRepositoryInterface
     public function getWithRelationsAndConditions(array $relations, array $conditions){
         return ApproverList::with($relations)->whereConditions($conditions)->get();
     }
-
+    
     public function update(int $id, array $data){
         return ApproverList::where('id', $id)->update($data);
     }

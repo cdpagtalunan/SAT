@@ -18,12 +18,12 @@
                 </li>
             </ul>
             <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
-                <li class="nav-item has-treeview">
+                {{-- <li class="nav-item has-treeview">
                     <a href="{{ route('home') }}" class="nav-link">
                         <i class="nav-icon fa-solid fa-gauge-high"></i>
                         <p>Home</p>
                     </a>
-                </li>
+                </li> --}}
 
                 <li class="nav-item has-treeview">
                     <a href="{{ route('sat') }}" class="nav-link">
@@ -31,12 +31,15 @@
                         <p>SAT</p>
                     </a>
                 </li>
-                <li class="nav-item has-treeview">
-                    <a href="{{ route('sat_approval') }}" class="nav-link">
-                        <i class="nav-icon fa-regular fa-file-lines"></i>
-                        <p>SAT Approval</p>
-                    </a>
-                </li>
+                @if (session('is_approver'))
+                    <li class="nav-item has-treeview">
+                        <a href="{{ route('sat_approval') }}" class="nav-link">
+                            <i class="nav-icon fa-regular fa-file-lines"></i>
+                            <p>SAT Approval</p>
+                        </a>
+                    </li>
+                @endif
+                
                 @if ($_SESSION['rapidx_user_id'] == 216)
                     <li class="nav-header font-weight-bold">&nbsp;Configuration</li>
                     <li class="nav-item has-treeview">

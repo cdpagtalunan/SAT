@@ -2,11 +2,18 @@
 
 namespace App\Http\Middleware;
 
+use App\Solid\Repositories\Interfaces\ApproverRepositoryInterface;
 use Closure;
 use Illuminate\Http\Request;
 
 class VerifySession
 {
+    protected $approverRepository;
+    
+    public function __construct( ApproverRepositoryInterface $approverRepository) {
+        $this->approverRepository = $approverRepository;
+    }
+
     /**
      * Handle an incoming request.
      *
@@ -40,8 +47,18 @@ class VerifySession
             return redirect('../');
         }
 
+        $approver = $this->approverRepository->getWithRelationsAndConditions(array(), [
+            'emp_id' => $_SESSION['rapidx_employee_number'],
+            'deleted_at' => null
+        ])->first();
+
+        $request->session()->put('is_approver', false);
+        if($approver){
+            $request->session()->put('is_approver', true);
+        }
         $request->session()->put('rapidx_id', $_SESSION['rapidx_user_id']);
         $request->session()->put('employee_number', $_SESSION['rapidx_employee_number']);
+
         return $next($request);
     }
 }

@@ -19,8 +19,12 @@ use App\Http\Controllers\DropdownController;
 */
 
 Route::middleware('verifySession')->group(function(){
+    // Route::get('/', function () {
+    //     return view('home');
+    // })->name('home');
+
     Route::get('/', function () {
-        return view('home');
+        return view('SAT');
     })->name('home');
 
     Route::get('/sat', function () {
