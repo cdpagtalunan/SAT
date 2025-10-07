@@ -4,7 +4,7 @@ namespace App\Solid\Services\Interfaces;
 interface SATServiceInterface
 {
     public function saveSAT(array $data);
-    public function dtGetSat();
+    public function dtGetSat(int $filter);
     public function getSatDetails(int $id);
     public function proceedObs(int $id);
     public function dtGetProcessForObservation(int $id);

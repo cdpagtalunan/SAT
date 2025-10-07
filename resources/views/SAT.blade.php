@@ -31,8 +31,28 @@
         <div class="row">
             <div class="col">
                 <div class="card"> 
-                    <div class="card-header d-flex justify-content-end">
-                        <button class="btn btn-primary" id="btnAddDataForSAT"><i class="fa-solid fa-plus"></i> Add SAT</button>
+                    <div class="card-header d-flex justify-content-between">
+                        <div>
+                            <ul class="nav nav-pills" id="pills-tab" role="tablist">
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link active btnSatFilter" data-bs-toggle="pill"
+                                         type="button" role="tab" aria-selected="true" data-status='0' title="Approved/Pending SAT">SAT</button>
+                                </li>
+                                <li class="nav-item" role="presentation">
+                                    <button class="nav-link btnSatFilter" data-bs-toggle="pill"
+                                         type="button" role="tab" aria-selected="true" data-status='1'>Observation</button>
+                                </li>
+                                @if (session('is_checker'))
+                                    <li class="nav-item" role="presentation">
+                                        <button class="nav-link btnSatFilter"  data-bs-toggle="pill"
+                                            type="button" role="tab"aria-selected="false" data-status='2'>Line Balance</button>
+                                    </li>
+                                @endif
+                            </ul>
+                        </div>
+                        @if (session('is_checker') && session('is_admin'))
+                            <button class="btn btn-primary ms-auto" id="btnAddDataForSAT"><i class="fa-solid fa-plus"></i> Add SAT</button>
+                        @endif
                     </div>
                     <div class="card-body">
                         <div class="table-responsive">
@@ -308,6 +328,7 @@
     
     let dtProcessLists, dtSat, dtSatObservation, dtLineBalance;
     let operatorListSAT;
+    let defaultSatView = 0;
     $(document).ready(function () {
         // Calls the function to fetch dropdown data for Assembly Line and Operation Line when the page loads.
         // The data will be used to populate the corresponding select elements in the modal form.
@@ -379,6 +400,9 @@
             "serverSide" : true,
             "ajax" : {
                 url: "{{ route('dt_get_sat') }}",
+                data: function (param){
+                    param.filter = defaultSatView;
+                }
             },
             fixedHeader: true,
             "columns":[
@@ -418,6 +442,11 @@
         $('#modalLineBalance').on('hidden.bs.modal', function(){
             modalCloseResetForm($('#formLineBalance')[0], 'modalLineBalance');
         });
+
+        $('.btnSatFilter').on('click', function(){
+            defaultSatView = $(this).attr('data-status');
+            dtSat.draw();
+        })
     });
 
     $(document).on('click', '.btnEditSAT', function(){

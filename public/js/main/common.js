@@ -189,11 +189,26 @@ const drawViewSatObservation = (satId) => {
             $('#TtlStationSatView').html(roundedUp);
 
             let totalOperators = 0;
+            let highestTact = 0;
+
             $('#tableViewLineBalance tbody tr').each(function() {
                 let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
                 totalOperators += cellValue;
+
+                let tactVal = parseFloat($(this).find('td').eq(3).text()) || 0;
+                if (tactVal > highestTact) {
+                    highestTact = tactVal;
+                }
                
             });
+            console.log('highestTact', highestTact);
+            assySAT = highestTact * totalOperators;
+            lineBalanceValue = (parseFloat($('#TtlStationSatView').text()) / parseFloat(assySAT) ) * 100;
+            outputPerHour = 3600 / highestTact;
+            
+            $('#assySatView').text(assySAT.toFixed(2))
+            $('#lineBalView').text(lineBalanceValue.toFixed(2))
+            $('#outputPerHrView').text(outputPerHour.toFixed(2))
             $('#ttlNoOperatorView').text(totalOperators);
         }
     });//end of 

@@ -36,7 +36,7 @@ class SATController extends Controller
     }
 
     public function dtGetSat(Request $request){
-        return $this->satService->dtGetSat();
+        return $this->satService->dtGetSat($request->filter);
     }
 
     public function getSatById(Request $request){

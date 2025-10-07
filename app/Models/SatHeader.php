@@ -26,9 +26,32 @@ class SatHeader extends Model
     public function lineBalByDetails(){
         return $this->hasOne(RapidxUser::class, 'id', 'line_bal_by');
     }
-    public function scopeWhereConditions($query, array $conditions){
-        foreach ($conditions as $key => $value) {
-            $query->where($key, $value);
+   
+    public function ScopeWhereConditions($query, $condition){
+        foreach ($condition as $key => $value) {
+            if (strpos($key, ':') !== false) {
+                [$operator, $field] = explode(':', $key, 2);
+                $operator = trim($operator);
+
+                switch ($operator) {
+                    case 'IN':
+                        $query->whereIn($field, (array) $value);
+                        break;
+                    case 'NOTIN':
+                        $query->whereNotIn($field, (array) $value);
+                        break;
+                    case 'LIKE':
+                        $query->where($field, 'LIKE', "%{$value}%");
+                        break;
+                    default:
+                        $query->where($field, $operator, $value);
+                        break;
+                }
+            }
+            else{
+                $query->where($key, $value);
+            }
         }
     }
+    
 }

@@ -4,6 +4,7 @@ namespace App\Exports;
 
 
 Use Maatwebsite\Excel\Sheet;
+use App\Exports\Sheets\LineBalanceSheet;
 use App\Exports\Sheets\ObservationSheet;
 use Maatwebsite\Excel\Concerns\Exportable;
 use Maatwebsite\Excel\Concerns\WithEvents;
@@ -26,6 +27,7 @@ class ExportSat implements  WithMultipleSheets
     public function sheets(): array {
         $sheets = [];
         $sheets[] = new ObservationSheet($this->sat);
+        $sheets[] = new LineBalanceSheet($this->sat);
         return $sheets;
     }
 }

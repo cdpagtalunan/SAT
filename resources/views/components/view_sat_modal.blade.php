@@ -100,11 +100,20 @@
                         <div class="card" id="id">
                             <div class="card-header">
                                 <div class="row">
-                                    <div class="col-sm-6">
+                                    <div class="col-sm-12 d-flex justify-content-around">
 
-                                    </div>
-                                    <div class="col-sm-6 d-flex justify-content-around">
-
+                                         <div>
+                                            Assembly SAT:
+                                            <label id="assySatView"> 0</label>
+                                        </div>
+                                         <div>
+                                            Line Balance (%):
+                                            <label id="lineBalView"> 0</label>
+                                        </div>
+                                         <div>
+                                            Output/Hr:
+                                            <label id="outputPerHrView"> 0</label>
+                                        </div>
                                         <div>
                                             Total Station SAT:
                                             <label id="TtlStationSatView"> 0</label>

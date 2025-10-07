@@ -94,10 +94,20 @@ class SATService implements SATServiceInterface
         }
     }
 
-    public function dtGetSat(){
+    public function dtGetSat(int $filter){
         $conditions = array(
             'deleted_at' => null
         );
+        
+        if($filter == 0){
+            $conditions['IN:status'] = [0,4];
+        }
+        else if($filter == 1){
+            $conditions['status'] = [1];
+        }
+        else if($filter == 2){
+            $conditions['status'] = [2];
+        }
         $relations = array();
         $sat = $this->satHeaderRepository->getWithRelationsConditions($relations, $conditions);
         return DataTables::of($sat)

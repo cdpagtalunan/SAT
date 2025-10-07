@@ -245,6 +245,8 @@ class ObservationSheet implements FromView, ShouldAutoSize, WithEvents, WithTitl
 
                 $sheet->getStyle("B{$signatories_initial}:N{$sheet->getHighestRow()}")->applyFromArray($border_outer);
 
+                
+
             },
         ];
     }
