@@ -110,6 +110,18 @@ class SATService implements SATServiceInterface
         }
         $relations = array();
         $sat = $this->satHeaderRepository->getWithRelationsConditions($relations, $conditions);
+
+        // Filter the SAT collection based on status and created_by conditions
+        $sat = collect($sat)->filter(function ($item) {
+            if ($item['status'] == 0) {
+                return $item['created_by'] == session('rapidx_id');
+            }
+            // include all status 4
+            if ($item['status'] == 4) {
+                return true;
+            }
+        })->values();// Reindex the filtered collection to reset the keys
+        
         return DataTables::of($sat)
         ->addColumn('actions', function($data){
             $result = "";
@@ -160,7 +172,7 @@ class SATService implements SATServiceInterface
             $result .= "</center>";
             return $result;
         })
-        ->addColumn('status', function($data){
+        ->addColumn('raw_status', function($data){
             $result = "";
             $result .= "<center>";
             switch ($data->status) {
@@ -197,7 +209,7 @@ class SATService implements SATServiceInterface
             $result .= "</center>";
             return $result;
         })
-        ->rawColumns(['actions', 'status'])
+        ->rawColumns(['actions', 'raw_status'])
         ->make(true);
     }
 

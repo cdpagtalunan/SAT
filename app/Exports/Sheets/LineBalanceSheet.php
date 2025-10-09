@@ -179,12 +179,6 @@ class LineBalanceSheet implements FromView, ShouldAutoSize, WithEvents, WithTitl
 
                 $sheet->getStyle("{$initial_column}5:{$column}{$sheet->getHighestRow()}")->getAlignment()->setWrapText(true);
                 $sheet->getStyle("{$initial_column}5:{$column}{$sheet->getHighestRow()}")->applyFromArray($center_align);
-
-
-
-
-
-
             },
         ];
     }

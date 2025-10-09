@@ -31,7 +31,7 @@
                         <p>SAT</p>
                     </a>
                 </li>
-                @if (session('is_approver'))
+                @if (session('is_approver') || session('is_admin'))
                     <li class="nav-item has-treeview">
                         <a href="{{ route('sat_approval') }}" class="nav-link">
                             <i class="nav-icon fa-regular fa-file-lines"></i>

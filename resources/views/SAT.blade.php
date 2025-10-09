@@ -407,7 +407,7 @@
             fixedHeader: true,
             "columns":[
                 { "data" : "actions", orderable:false, searchable:false },
-                { "data" : "status" },
+                { "data" : "raw_status" },
                 { "data" : "device_name" },
                 { "data" : "operation_line" },
                 { "data" : "assembly_line" },
