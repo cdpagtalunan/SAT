@@ -13,7 +13,9 @@
 
     <!-- Right navbar links -->
     <div class="navbar-nav">
-        {{-- {{ $_SESSION['rapidx_name'] }} --}}
+        <span class="navbar-text">
+            {{ session('rapidx_name') }}
+        </span>
         {{-- @php
             $moduleIds = array_map(function($access) {
                 return $access['module_id'];
