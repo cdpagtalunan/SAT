@@ -31,3 +31,11 @@ body {
     width: 95% !important;
     min-width: 90% !important;
 }
+
+.select2-container {
+    z-index: 9999 !important;
+}
+.dataTables_scrollBody {
+    overflow: auto;
+    position: relative;
+}

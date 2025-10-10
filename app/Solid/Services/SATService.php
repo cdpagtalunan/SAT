@@ -1,13 +1,14 @@
 <?php
 namespace App\Solid\Services;
 
-use App\Solid\Repositories\Interfaces\ApproverRepositoryInterface;
 use DataTables;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Storage;
 use App\Solid\Services\Interfaces\SATServiceInterface;
-use App\Solid\Repositories\Interfaces\SATHeaderRepositoryInterface;
+use App\Solid\Repositories\Interfaces\ApproverRepositoryInterface;
 // Service implements the ServiceInterface, responsible for saving users.
 
+use App\Solid\Repositories\Interfaces\SATHeaderRepositoryInterface;
 use App\Solid\Repositories\Interfaces\SATProcessRepositoryInterface;
 date_default_timezone_set('Asia/Manila');
 class SATService implements SATServiceInterface
@@ -120,6 +121,8 @@ class SATService implements SATServiceInterface
             if ($item['status'] == 4) {
                 return true;
             }
+
+            return true;
         })->values();// Reindex the filtered collection to reset the keys
         
         return DataTables::of($sat)
@@ -259,6 +262,21 @@ class SATService implements SATServiceInterface
             $result .= "</center>";
             return $result;
         })
+        ->addColumn('attchmnt', function($data){
+            // Check if there's an attachment first
+            if (empty($data->attachment)) {
+                return '<span class="text-muted">No Attachment</span>';
+            }
+
+            // Get extension safely
+            $ext = pathinfo($data->attachment, PATHINFO_EXTENSION);
+
+            // Build full public path (assuming storage:link exists)
+            $filePath = 'public/storage/file_attachments/' . $data->id.'.'.$ext;
+
+            // Return a proper download link
+            return "<a href='" . asset($filePath) . "' download>Download " . strtoupper($ext) . "</a>";
+        })
         ->addColumn('observed_time', function($data){
             $obsValues = [
                 $data->obs_1,
@@ -335,15 +353,21 @@ class SATService implements SATServiceInterface
             $data->lb_uph = $lb_uph;
             return $round_up;
         })
-        ->rawColumns(['actions'])
+        ->rawColumns(['actions', 'attchmnt'])
         ->make(true);
     }
 
     public function saveSatProcessObs(array $data){
         DB::beginTransaction();
+        $file     = $data['attachment'];
+
         try{
+            // $file->getClientOriginalName()
+            Storage::putFileAs('public/file_attachments', $file, $data['id'].".".$file->getClientOriginalExtension());
+
             $update_array = array(
                 'operator_name' => $data['operator'],
+                'attachment'    => $file->getClientOriginalName(),
                 'obs_1'         => $data['obs1'],
                 'obs_2'         => $data['obs2'],
                 'obs_3'         => $data['obs3'],

@@ -168,6 +168,7 @@
                                                 <tr>
                                                     <th rowspan="2">Action</th>
                                                     <th rowspan="2">Process</th>
+                                                    <th rowspan="2">Attachment</th>
                                                     <th rowspan="2">Operator</th>
                                                     <th colspan="5" class="text-center">Observation (sec. per cycle-unit)</th>
                                                     <th rowspan="2">Observed Time (secs.)</th>
@@ -186,7 +187,7 @@
                                             </thead>
                                             <tfoot>
                                                 <tr>
-                                                    <th colspan="10" class="text-end">Total</th>
+                                                    <th colspan="11" class="text-end">Total</th>
                                                     <th id="totalNormalTime">0</th>
                                                     <th id="totalStandardTime">0</th>
                                                     <th></th>

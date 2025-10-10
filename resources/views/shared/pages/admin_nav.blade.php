@@ -3,7 +3,7 @@
 
     <!-- System title and logo -->
     <a href="" class="brand-link text-center">
-        <span class="brand-text font-weight-light font-size"><h5>Shipment Confirmation</h5></span> 
+        <span class="brand-text font-weight-light font-size"><h5>SAT</h5></span> 
     </a> <!-- System title and logo -->
 
     <!-- Sidebar -->

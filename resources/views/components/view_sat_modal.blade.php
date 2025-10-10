@@ -63,7 +63,7 @@
                                         id="tableViewSATObservation">
                                         <thead>
                                             <tr>
-                                                {{-- <th rowspan="2">Action</th> --}}
+                                                <th rowspan="2">Action</th>
                                                 <th rowspan="2">Process</th>
                                                 <th rowspan="2">Operator</th>
                                                 <th colspan="5" class="text-center">Observation (sec. per cycle-unit)
@@ -84,7 +84,7 @@
                                         </thead>
                                         <tfoot>
                                             <tr>
-                                                <th colspan="9" class="text-end">Total</th>
+                                                <th colspan="10" class="text-end">Total</th>
                                                 <th id="totalNormalTimeView">0</th>
                                                 <th id="totalStandardTimeView">0</th>
                                                 <th></th>

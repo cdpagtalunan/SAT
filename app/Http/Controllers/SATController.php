@@ -53,6 +53,7 @@ class SATController extends Controller
 
     public function saveProcessObs(SATProcessRequest $request){
         $data = $request->filterParameters();
+        $data['attachment'] = $request->file('attachment');
         return $this->satService->saveSatProcessObs($data);
     }
 

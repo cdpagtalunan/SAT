@@ -156,16 +156,22 @@ $(document).on('click', '.btnAddProcessObs', function(e){
         <select class="form-control form-control-sm w-auto select2bs5" id="selOperatorName">
         </select>
     `;
-    cells.eq(2).html(selectHtml);
-    cells.eq(2).find('select').select2({
+
+    let attachmentHTML = `
+       <input type="file" id="observationAttchment" name="attachment">
+    `;
+    cells.eq(2).html(attachmentHTML);
+    cells.eq(3).html(selectHtml);
+    cells.eq(3).find('select').select2({
         theme: 'bootstrap-5',
         width: '100%',
-        dropdownParent: cells.eq(2), // important if inside DataTables or modals
+        // dropdownParent: cells.eq(3), // important if inside DataTables or modals
+        dropdownParent: $('#modalDataSAT'),
         minimumResultsForSearch: 0
     });
 
     // Editable columns range: 3 to 7
-    for (let i = 3; i <= 7; i++) {
+    for (let i = 4; i <= 8; i++) {
         let cell = cells.eq(i);
         cell.attr('contenteditable', 'true');
         if (cell.text().trim() === '--') {
@@ -194,7 +200,7 @@ $(document).on('click', '.btnCancel', function(e){
         .text('--');
 
     // Editable columns range: 3 to 7
-    for (let i = 3; i <= 7; i++) {
+    for (let i = 3; i <= 8; i++) {
         let cell = cells.eq(i);
         cell.attr('contenteditable', 'false')
             .addClass('placeholder-cell')
@@ -208,6 +214,8 @@ $(document).on('click', '.btnCancel', function(e){
 
 $(document).on('click', '.btnSaveProcessObs', function(e){
     e.preventDefault();
+    let formData = new FormData();
+
     let processId = $(this).data('id');
     let row = dtSatObservation.row($(this).closest('tr'));
     if($('#selOperatorName').val() == null){
@@ -229,20 +237,33 @@ $(document).on('click', '.btnSaveProcessObs', function(e){
             });
             return
         }
-        dataToSave = {
-            id      : processId,
-            // operator: sessionEmpNo,
-            operator: $('#selOperatorName').val(),
-            obs1    : $(rowNode).find('td').eq(3).html() == 'Enter value' ? '': $(rowNode).find('td').eq(3).html(),
-            obs2    : $(rowNode).find('td').eq(4).html() == 'Enter value' ? '': $(rowNode).find('td').eq(4).html(),
-            obs3    : $(rowNode).find('td').eq(5).html() == 'Enter value' ? '': $(rowNode).find('td').eq(5).html(),
-            obs4    : $(rowNode).find('td').eq(6).html() == 'Enter value' ? '': $(rowNode).find('td').eq(6).html(),
-            obs5    : $(rowNode).find('td').eq(7).html() == 'Enter value' ? '': $(rowNode).find('td').eq(7).html(),
-            _token  : token
-        };
+        // dataToSave = {
+        //     id        : processId,
+        //     attachment: $('#observationAttchment').val(),
+        //     operator  : $('#selOperatorName').val(),
+        //     obs1      : $(rowNode).find('td').eq(4).html() == 'Enter value' ? '': $(rowNode).find('td').eq(4).html(),
+        //     obs2      : $(rowNode).find('td').eq(5).html() == 'Enter value' ? '': $(rowNode).find('td').eq(5).html(),
+        //     obs3      : $(rowNode).find('td').eq(6).html() == 'Enter value' ? '': $(rowNode).find('td').eq(6).html(),
+        //     obs4      : $(rowNode).find('td').eq(7).html() == 'Enter value' ? '': $(rowNode).find('td').eq(7).html(),
+        //     obs5      : $(rowNode).find('td').eq(8).html() == 'Enter value' ? '': $(rowNode).find('td').eq(8).html(),
+        //     _token    : token
+        // };
+
+        formData.append('id', processId);
+        formData.append('attachment', $('#observationAttchment')[0].files ? $('#observationAttchment')[0].files[0] : '');
+        formData.append('operator', $('#selOperatorName').val());
+
+        formData.append('obs1', $(rowNode).find('td').eq(4).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(4).text());
+        formData.append('obs2', $(rowNode).find('td').eq(5).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(5).text());
+        formData.append('obs3', $(rowNode).find('td').eq(6).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(6).text());
+        formData.append('obs4', $(rowNode).find('td').eq(7).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(7).text());
+        formData.append('obs5', $(rowNode).find('td').eq(8).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(8).text());
+
+        formData.append('_token', token);
     });
 
-    saveProcessObs(dataToSave);
+    // saveProcessObs(dataToSave);
+    saveProcessObs(formData);
 });
 
 $(document).on('click', '.btnDoneObs', function(){
@@ -404,6 +425,7 @@ const drawProcessListTableForObservation = (satId) => {
         "columns"    : [
             { "data" : "actions", orderable:false, searchable:false },
             { "data" : "process_name" },
+            { "data" : "attchmnt" },
             { "data" : "operator_name" },
             { "data" : "obs_1" },
             { "data" : "obs_2" },
@@ -419,7 +441,7 @@ const drawProcessListTableForObservation = (satId) => {
         "columnDefs": [
             {"className": "dt-center", "targets": "_all"},
             {
-                "targets"       : [2,3,4,5,6,7],
+                "targets"       : [3,4,5,6,7,8],
                 "data"          : null,
                 "defaultContent": "--"
             },
@@ -454,6 +476,8 @@ const saveProcessObs = (data) => {
         url: "save_process_obs",
         data: data,
         dataType: "json",
+        processData: false,
+        contentType: false,
         beforeSend: function(){
             $('.btnSaveProcessObs').prop('disabled', true);
         },

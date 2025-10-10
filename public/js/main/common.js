@@ -4,6 +4,8 @@ $('.select2bs5').select2({
      minimumResultsForSearch: 0
 });
 
+
+
 const modalCloseResetForm = (formId, modal) => {
     formId.reset();
     console.log(`modal ${modal} closed`);
@@ -106,7 +108,7 @@ const drawViewSatObservation = (satId) => {
         },
         "fixedHeader": true,
         "columns"    : [
-            // { "data" : "actions", orderable:false, searchable:false },
+            { "data" : "attchmnt" },
             { "data" : "process_name" },
             { "data" : "operator_name" },
             { "data" : "obs_1" },
