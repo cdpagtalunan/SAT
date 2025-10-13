@@ -360,14 +360,17 @@ class SATService implements SATServiceInterface
     public function saveSatProcessObs(array $data){
         DB::beginTransaction();
         $file     = $data['attachment'];
-
+        $file_name = null;
         try{
             // $file->getClientOriginalName()
-            Storage::putFileAs('public/file_attachments', $file, $data['id'].".".$file->getClientOriginalExtension());
+            if(!is_null($file)){
+                $file_name = $file->getClientOriginalName();
+                Storage::putFileAs('public/file_attachments', $file, $data['id'].".".$file->getClientOriginalExtension());
+            }
 
             $update_array = array(
                 'operator_name' => $data['operator'],
-                'attachment'    => $file->getClientOriginalName(),
+                'attachment'    => $file_name,
                 'obs_1'         => $data['obs1'],
                 'obs_2'         => $data['obs2'],
                 'obs_3'         => $data['obs3'],
