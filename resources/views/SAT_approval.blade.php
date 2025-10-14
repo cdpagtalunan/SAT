@@ -104,7 +104,7 @@
                 }
             ],
             "columnDefs": [
-                {"className": "dt-center", "targets": [6]},
+                {"className": "dt-center", "targets": [6,7]},
             ],
         });
     });

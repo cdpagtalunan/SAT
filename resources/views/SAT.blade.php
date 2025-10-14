@@ -66,6 +66,8 @@
                                         <th>Assembly Line</th>
                                         <th>QSAT</th>
                                         <th>No. of Pins</th>
+                                        <th>SAT Status</th>
+                                        <th>Line Balance Status</th>
                                     </tr>
                                 </thead>
                             </table>
@@ -414,18 +416,57 @@
                 { "data" : "assembly_line" },
                 { "data" : "qsat" },
                 { "data" : "no_of_pins" },
+                 { 
+                    "data" : "SAT_status",
+                    render: function(data, type, row, meta){
+                        if(row.validated_by === null){
+                            return 'No Data'
+                        }
+                        else if(data){
+                            return 'Good';
+                        }
+                        return 'Not Good'
+                        // return '<span style="height: 100%; display:block;background-color:'+color+';color:white;padding:2px 8px;border-radius:4px;">' + data + '</span>';
+                    },
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if(row.validated_by === null){
+                        }
+                        else if (cellData) {
+                            $(td).addClass('bg-success'); // red for high tact_time
+                        } else {
+                            $(td).addClass('bg-danger'); // green for low tact_time
+                        }
+                    }
+                },
+                {
+                    "data" : "lb_status",
+                    render: function(data, type, row, meta){
+                        console.log('row.validated_by', row.validated_by);
+                        if(row.line_bal_by === null){
+                            return 'No Data'
+                        }
+                        else if(data){
+                            return 'Good';
+                        }
+                        return 'Not Good'
+                        // return '<span style="height: 100%; display:block;background-color:'+color+';color:white;padding:2px 8px;border-radius:4px;">' + data + '</span>';
+                    },
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (rowData.line_bal_by === null) {
+                           
+                        } 
+                        else if(cellData){
+                            $(td).addClass('bg-success'); // red for high tact_time
+                        }
+                        else {
+                            $(td).addClass('bg-danger'); // green for low tact_time
+                        }
+                    }
+                }
             ],
-            // "columnDefs": [
-            //     {"className": "dt-center", "targets": "_all"},
-            //     {
-            //         "targets": [7],
-            //         "data": null,
-            //         "defaultContent": "---"
-            //     },
-            // ],
-            // 'drawCallback': function( settings ) {
-            //     let dtApi = this.api();
-            // }
+            "columnDefs": [
+                {"className": "dt-center", "targets": [7,8]},
+            ],
         });//end
 
         $('#saveLineBalance').on('submit', function(e){

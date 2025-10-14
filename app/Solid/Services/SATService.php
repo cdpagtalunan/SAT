@@ -109,7 +109,9 @@ class SATService implements SATServiceInterface
         else if($filter == 2){
             $conditions['status'] = [2];
         }
-        $relations = array();
+        $relations = array(
+            'satProcessDetails'
+        );
         $sat = $this->satHeaderRepository->getWithRelationsConditions($relations, $conditions);
 
         // Filter the SAT collection based on status and created_by conditions
@@ -209,7 +211,46 @@ class SATService implements SATServiceInterface
                 default:
                     break;
             }
+            
             $result .= "</center>";
+            return $result;
+        })
+        ->addColumn('SAT_status', function($data){
+            $result = true;
+            $sum = 0;
+            foreach($data->satProcessDetails AS $process){
+                if($process->standard_time == 0){
+                    return $result = false;
+                }
+
+                $sum = $sum + $process->standard_time;
+            }
+
+
+            if($sum > $data->qsat){
+                $result = false;
+            }
+            return $result;
+        })
+        ->addColumn('lb_status', function($data){
+            $result = true;
+            $sum = 0;
+
+            $maxTact = collect($data->satProcessDetails)->max('tact_time');
+            $sum_lb_operator = collect($data->satProcessDetails)->sum('lb_no_operator');
+            $sum_ave_obs = collect($data->satProcessDetails)->sum('average_obs');
+          
+            $assySAT = $maxTact * $sum_lb_operator;
+            if($assySAT == 0){
+                return $result = false;
+            }
+            $lineBalanceValue = ($sum_ave_obs / $assySAT) * 100;
+
+            $rounded = round($lineBalanceValue,2);
+
+            if($rounded < 85){
+                $result = false;
+            }
             return $result;
         })
         ->rawColumns(['actions', 'raw_status'])
