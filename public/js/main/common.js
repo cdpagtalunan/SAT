@@ -135,7 +135,7 @@ const drawViewSatObservation = (satId) => {
             let data = dtApi.data();
             let totalNt = 0;
             let totalSt = 0;
-                console.log(data);
+            let qsat = $('#txtQsatView').val();
             
             data.each(function(rowData, index) {
                 totalNt =parseFloat(totalNt) + parseFloat(rowData.nt);
@@ -149,6 +149,14 @@ const drawViewSatObservation = (satId) => {
             let roundedUpNt = totalNt.toFixed(2);
             let roundedUpSt = totalSt.toFixed(2);   
             $('#totalNormalTimeView').html(roundedUpNt);
+            if(parseFloat(roundedUpSt) > parseFloat(qsat)){
+                $('#totalStandardTimeView').addClass('bg-danger');
+                $('#txtQsatView').addClass('bg-danger');
+            }
+            else{
+                $('#totalStandardTimeView').addClass('bg-success');
+                $('#txtQsatView').addClass('bg-success');
+            }
             $('#totalStandardTimeView').html(roundedUpSt);
         }
     });
@@ -203,13 +211,19 @@ const drawViewSatObservation = (satId) => {
                 }
                
             });
-            console.log('highestTact', highestTact);
             assySAT = highestTact * totalOperators;
             lineBalanceValue = (parseFloat($('#TtlStationSatView').text()) / parseFloat(assySAT) ) * 100;
             outputPerHour = 3600 / highestTact;
             
             $('#assySatView').text(assySAT.toFixed(2))
             $('#lineBalView').text(lineBalanceValue.toFixed(2))
+            if(lineBalanceValue < 80){
+                
+                $('#lineBalView').parent().addClass('text-danger')
+            }
+            else{
+                $('#lineBalView').parent().addClass('text-success')
+            }
             $('#outputPerHrView').text(outputPerHour.toFixed(2))
             $('#ttlNoOperatorView').text(totalOperators);
         }

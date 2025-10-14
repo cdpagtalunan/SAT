@@ -101,16 +101,16 @@
                             <div class="card-header">
                                 <div class="row">
                                     <div class="col-sm-12 d-flex justify-content-around">
-
-                                         <div>
-                                            Assembly SAT:
-                                            <label id="assySatView"> 0</label>
-                                        </div>
-                                         <div>
+                                        <div>
                                             Line Balance (%):
                                             <label id="lineBalView"> 0</label>
                                         </div>
-                                         <div>
+                                        <div>
+                                            Assembly SAT:
+                                            <label id="assySatView"> 0</label>
+                                        </div>
+
+                                        <div>
                                             Output/Hr:
                                             <label id="outputPerHrView"> 0</label>
                                         </div>

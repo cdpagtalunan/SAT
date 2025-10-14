@@ -101,7 +101,8 @@ class ApproverService implements ApproverServiceInterface
             'deleted_at' => null,
         );
         $relations = array(
-            'sat_details'
+            'sat_details',
+            'sat_details.satProcessDetails'
         );
         $approval_list = $this->approverRepository->getApprovalWithRelationAndConditions($relations, $conditions);
         
@@ -146,6 +147,36 @@ class ApproverService implements ApproverServiceInterface
                 $result .= " <span class='badge bg-success'>Approved</span>";
             }
             $result .= "</center>";
+            return $result;
+        })
+        ->addColumn('SAT_status', function($approval_list){
+            $result = true;
+            $sum = 0;
+            foreach($approval_list->sat_details->satProcessDetails AS $process){
+                $sum = $sum + $process->standard_time;
+            }
+
+            if($sum > $approval_list->sat_details->qsat){
+                $result = false;
+            }
+            return $result;
+          
+        })
+        ->addColumn('lb_status', function($approval_list){
+            $result = true;
+            $sum = 0;
+            $maxTact = collect($approval_list->sat_details->satProcessDetails)->max('tact_time');
+            $sum_lb_operator = collect($approval_list->sat_details->satProcessDetails)->sum('lb_no_operator');
+            $sum_ave_obs = collect($approval_list->sat_details->satProcessDetails)->sum('average_obs');
+          
+            $assySAT = $maxTact * $sum_lb_operator;
+            $lineBalanceValue = ($sum_ave_obs / $assySAT) * 100;
+
+            $rounded = round($lineBalanceValue,2);
+
+            if($rounded < 85){
+                $result = false;
+            }
             return $result;
         })
         ->rawColumns(['action', 'status'])

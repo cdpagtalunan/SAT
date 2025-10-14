@@ -32,6 +32,8 @@
                                     <th>Operations Line</th>
                                     <th>Assembly Line</th>
                                     <th>QSAT</th>
+                                    <th>SAT Status</th>
+                                    <th>Line Balance Status</th>
                                 </tr>
                             </thead>
                         </table>
@@ -66,6 +68,43 @@
                 { "data" : "sat_details.operation_line" },
                 { "data" : "sat_details.assembly_line" },
                 { "data" : "sat_details.qsat" },
+                { 
+                    "data" : "SAT_status",
+                    render: function(data, type, row, meta){
+                        if(data){
+                            return 'Good';
+                        }
+                        return 'Not Good'
+                        // return '<span style="height: 100%; display:block;background-color:'+color+';color:white;padding:2px 8px;border-radius:4px;">' + data + '</span>';
+                    },
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (cellData) {
+                            $(td).addClass('bg-success'); // red for high tact_time
+                        } else {
+                            $(td).addClass('bg-danger'); // green for low tact_time
+                        }
+                    }
+                },
+                {
+                    "data" : "lb_status",
+                    render: function(data, type, row, meta){
+                        if(data){
+                            return 'Good';
+                        }
+                        return 'Not Good'
+                        // return '<span style="height: 100%; display:block;background-color:'+color+';color:white;padding:2px 8px;border-radius:4px;">' + data + '</span>';
+                    },
+                    createdCell: function (td, cellData, rowData, row, col) {
+                        if (cellData) {
+                            $(td).addClass('bg-success'); // red for high tact_time
+                        } else {
+                            $(td).addClass('bg-danger'); // green for low tact_time
+                        }
+                    }
+                }
+            ],
+            "columnDefs": [
+                {"className": "dt-center", "targets": [6]},
             ],
         });
     });
@@ -83,7 +122,7 @@
         $('#txtAssyLineView').val(assemblyLine)
         $('#txtNoPinsView').val(noOfPins)
         $('#txtQsatView').val(qsat)
-        getSatDetails(satId);
+        // getSatDetails(satId);
         drawViewSatObservation(satId)
         $('#modalViewSatDetails').modal('show');
     });

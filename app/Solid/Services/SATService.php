@@ -278,80 +278,92 @@ class SATService implements SATServiceInterface
             return "<a href='" . asset($filePath) . "' download>Download " . strtoupper($ext) . "</a>";
         })
         ->addColumn('observed_time', function($data){
-            $obsValues = [
-                $data->obs_1,
-                $data->obs_2,
-                $data->obs_3,
-                $data->obs_4,
-                $data->obs_5
-            ];
+            // $obsValues = [
+            //     $data->obs_1,
+            //     $data->obs_2,
+            //     $data->obs_3,
+            //     $data->obs_4,
+            //     $data->obs_5
+            // ];
 
-            $filtered = array_filter($obsValues, function ($value) {
-                return $value !== null;
-            });
+            // $filtered = array_filter($obsValues, function ($value) {
+            //     return $value !== null;
+            // });
 
-            if(count($filtered) == 0){
-                $average = null;
-                return $average;
-            }
+            // if(count($filtered) == 0){
+            //     $average = null;
+            //     return $average;
+            // }
 
-            $average = array_sum($filtered) / count($filtered);
-            // $data->observed_time = round($average, 2);
-            $data->observed_time = $average;
-            $round_up = round($average, 2);
-            return $round_up;
+            // $average = array_sum($filtered) / count($filtered);
+            // // $data->observed_time = round($average, 2);
+            // $data->observed_time = $average;
+            // $round_up = round($average, 2);
+
+            // return $round_up;
+            return round($data->average_obs,2);
 
         })
         ->addColumn('nt', function($data){
-            $data->nt = null;
+            // $data->nt = null;
 
-            $result = $data->observed_time;
-            $data->nt = $result;
-            $round_up = round($result, 2);
-            return $round_up;
+            // $result = $data->observed_time;
+            // $data->nt = $result;
+            // $round_up = round($result, 2);
+            // return $round_up;
+            return round($data->average_obs,2);
+
         })
         ->addColumn('st', function($data){
-            $data->st = null;
-            if($data->nt === null){
-                return $data->st;
-            }
-            $st = $data->nt*(1+($data->allowance / 100));
-            $round_up = round($st, 2);
-            $data->st = $st;
-            return $round_up;
+            // $data->st = null;
+            // if($data->nt === null){
+            //     return $data->st;
+            // }
+            // $st = $data->nt*(1+($data->allowance / 100));
+            // $round_up = round($st, 2);
+            // $data->st = $st;
+            // return $round_up;
+            return round($data->standard_time,2);
+
         })
         ->addColumn('uph', function($data){
-            $data->uph = null;
+            // $data->uph = null;
 
-            if($data->st === null){
-                return $data->uph;
-            }
-            $uph = 3600/$data->st;
-            $round_up = round($uph, 2);
-            $data->uph = $uph;
-            return $round_up;
+            // if($data->st === null){
+            //     return $data->uph;
+            // }
+            // $uph = 3600/$data->st;
+            // $round_up = round($uph, 2);
+            // $data->uph = $uph;
+            // return $round_up;
+            return round($data->uph_time,2);
+            
         })
         ->addColumn('tact', function($data){
-            $data->tact = null;
+            // $data->tact = null;
 
-            if($data->nt === null || $data->lb_no_operator === null){
-                return $data->tact;
-            }
+            // if($data->nt === null || $data->lb_no_operator === null){
+            //     return $data->tact;
+            // }
 
-            $tact = $data->nt / $data->lb_no_operator;
-            $round_up = round($tact, 2);
-            $data->tact = $tact;
-            return $round_up;
+            // $tact = $data->nt / $data->lb_no_operator;
+            // $round_up = round($tact, 2);
+            // $data->tact = $tact;
+            // return $round_up;
+            return round($data->tact_time,2);
+
         })
         ->addColumn('lb_uph', function($data){
-            $data->lb_uph = null;
-            if($data->tact === null){
-                return $data->lb_uph;
-            }
-            $lb_uph = 3600/$data->tact;
-            $round_up = round($lb_uph, 2);
-            $data->lb_uph = $lb_uph;
-            return $round_up;
+            // $data->lb_uph = null;
+            // if($data->tact === null){
+            //     return $data->lb_uph;
+            // }
+            // $lb_uph = 3600/$data->tact;
+            // $round_up = round($lb_uph, 2);
+            // $data->lb_uph = $lb_uph;
+            // return $round_up;
+            return round($data->lb_uph_time,2);
+
         })
         ->rawColumns(['actions', 'attchmnt'])
         ->make(true);
