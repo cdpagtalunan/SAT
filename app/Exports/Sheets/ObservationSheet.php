@@ -121,7 +121,6 @@ class ObservationSheet implements FromView, ShouldAutoSize, WithEvents, WithTitl
             ) {
                 $sheet = $event->sheet->getDelegate();
                 $sheet->setShowGridlines(false);
-                $sheet->setCellValue('B4', "STANDARD ASSEMBLY TIME (SAT)");
 
                 $fields = [
                     ['B5', 'Device Name:', 'D5', $sat->device_name, 'D5:G5'],
@@ -188,6 +187,12 @@ class ObservationSheet implements FromView, ShouldAutoSize, WithEvents, WithTitl
                 $sheet->getStyle("B9:N10")->applyFromArray($header);
                 $sheet->getRowDimension(9)->setRowHeight(33);
 
+                $sheet->setCellValue('B8', "STANDARD ASSEMBLY TIME (SAT)");
+                $sheet->mergeCells('B8:N8');
+                $sheet->getStyle('B8')->applyFromArray($center_align);
+                $sheet->getStyle('B8')->applyFromArray($header);
+
+
                 $start_row = 11;
                 $initial = 11;
                 $ctr = 1;
@@ -243,7 +248,7 @@ class ObservationSheet implements FromView, ShouldAutoSize, WithEvents, WithTitl
                 $sheet->setCellValue('H' . $signatories_start, "Engineering Section Head");
                 $sheet->setCellValue('L' . $signatories_start, "Production Section Head");
 
-                $sheet->getStyle("B{$signatories_initial}:N{$sheet->getHighestRow()}")->applyFromArray($border_outer);
+                $sheet->getStyle("B8:N{$sheet->getHighestRow()}")->applyFromArray($border_outer);
 
                 
 

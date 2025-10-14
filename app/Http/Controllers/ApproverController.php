@@ -44,7 +44,6 @@ class ApproverController extends Controller
 
     public function approveSat(ApproveProcessRequest $request){
         $data = $request->filterParameters();
-        return session('approver_type');
         return $this->approverService->approveSat($data);
     }
 
