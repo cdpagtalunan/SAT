@@ -13,7 +13,12 @@ class ApproveProcessRequest extends FormRequest
      */
     public function authorize()
     {
-        return true;
+        if(session('is_approver')){
+            if(in_array($this->approval_type, session('approver_type'))){
+                return true;
+            }
+        }
+        return false;
     }
 
     /**

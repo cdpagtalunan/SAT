@@ -40,6 +40,9 @@ const satProcessApproval = (approvalId, approverType) => {
         },
         error: function(xhr, status, error){
             $('.btnApprove').prop('disabled', false);
+            if(xhr.status == 403){
+                toastr.error('You are not authorized to approve!');
+            }
             console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
         }
     });

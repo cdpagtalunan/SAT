@@ -55,12 +55,14 @@ class VerifySession
         $request->session()->put('is_approver', false);
         $request->session()->put('is_admin', false);
         $request->session()->put('is_checker', false);
+        $request->session()->put('approver_type', []);
+
 
 
         $approver = $this->approverRepository->getWithRelationsAndConditions(array(), [
             'emp_id' => $_SESSION['rapidx_employee_number'],
             'deleted_at' => null
-        ])->first();
+        ])->pluck('approval_type')->toArray();
 
         $conditions= array(
             'rapidx_emp_id' => $_SESSION['rapidx_user_id'],
@@ -78,6 +80,7 @@ class VerifySession
         }
         if($approver){
             $request->session()->put('is_approver', true);
+            $request->session()->put('approver_type', $approver);
         }
         $request->session()->put('rapidx_id', $_SESSION['rapidx_user_id']);
         $request->session()->put('employee_number', $_SESSION['rapidx_employee_number']);
