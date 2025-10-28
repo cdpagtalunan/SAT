@@ -26,6 +26,8 @@ class UserService implements UserServiceInterface
         );
         $rapidx_user = $this->userRepository->getRapidxWithRelationsAndCondition($rapidx_relations, $rapidx_conditions);
 
+   
+
         // Merging logic
         // Step 1: get all rapidx_emp_id values
         $empIds = $sat_users->pluck('rapidx_emp_id');
@@ -34,7 +36,9 @@ class UserService implements UserServiceInterface
             return $empIds->contains($user['user_id']);
         });
         // Step 3: merge both arrays
-        $merged = $sat_users->merge($filteredRapidX)->values();
+        // $merged = $sat_users->merge($filteredRapidX)->values();
+        $merged = $sat_users->concat($filteredRapidX)->values();
+
 
         return DataTables::of($merged)
         ->addColumn('btn_checker', function($merged){
