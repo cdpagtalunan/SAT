@@ -41,7 +41,12 @@ class LineBalanceService implements LineBalanceServiceInterface
                     'lb_no_operator' => $line_balance['noOfOperator'],
                     'updated_by' => session('rapidx_id'),
                 );
-                $this->satProcess->update($sat_line_balance_data_array, $line_balance['satProcessId']);
+
+                $conditions = array(
+                    'sat_header_id' => $data['sat_header_id'],
+                    'process_name'  => $line_balance['processName'],
+                );
+                $this->satProcess->updateWithConditions($sat_line_balance_data_array, $conditions);
             }
             DB::commit();
             return response()->json(['result' => true]);

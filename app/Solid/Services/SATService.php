@@ -282,134 +282,326 @@ class SATService implements SATServiceInterface
         }
     }
 
-    public function dtGetProcessForObservation(int $id){
-        $relations = array(
-            'rapidxUserDetails'
-        );
-        $conditions = array(
-            "sat_header_id" => $id
-        );
-        $sat_processess = $this->satProcessRepository->getWithRelationsConditions($relations, $conditions);
-        return DataTables::of($sat_processess)
-        ->setRowId('id')
-        ->addColumn('actions', function($data){
-            $result = "";
-            $result .= "<center>";
-            $result .= "<button type='button' class='btn btn-sm btn-primary btnAddProcessObs' data-id='{$data->id}'><i class='fa-solid fa-pen'></i></button>";
-            $result .= "<div id='divButtonProcessObs' class='d-none'>
-                            <button type='button' class='btn btn-sm btn-success btnSaveProcessObs' data-id='{$data->id}'><i class='fa-solid fa-check'></i></button>
-                            <button type='button' class='btn btn-sm btn-danger ml-1 btnCancel' data-id='{$data->id}'><i class='fa-solid fa-xmark'></i></button>
-                        </div>";
-            $result .= "</center>";
-            return $result;
-        })
-        ->addColumn('attchmnt', function($data){
-            // Check if there's an attachment first
-            if (empty($data->attachment)) {
-                return '<span class="text-muted">No Attachment</span>';
-            }
+    // public function dtGetProcessForObservation(int $id){
+    //     $relations = array(
+    //         'rapidxUserDetails'
+    //     );
+    //     $conditions = array(
+    //         "sat_header_id" => $id
+    //     );
+    //     $sat_processess = $this->satProcessRepository->getWithRelationsConditions($relations, $conditions);
+    //     return DataTables::of($sat_processess)
+    //     ->setRowId('id')
+    //     ->addColumn('actions', function($data){
+    //         $result = "";
+    //         $result .= "<center>";
+    //         $result .= "<button type='button' class='btn btn-sm btn-primary btnAddProcessObs' data-id='{$data->id}'><i class='fa-solid fa-pen'></i></button>";
+    //         $result .= "<div id='divButtonProcessObs' class='d-none'>
+    //                         <button type='button' class='btn btn-sm btn-success btnSaveProcessObs' data-id='{$data->id}'><i class='fa-solid fa-check'></i></button>
+    //                         <button type='button' class='btn btn-sm btn-danger ml-1 btnCancel' data-id='{$data->id}'><i class='fa-solid fa-xmark'></i></button>
+    //                     </div>";
+    //         $result .= "</center>";
+    //         return $result;
+    //     })
+    //     ->addColumn('attchmnt', function($data){
+    //         // Check if there's an attachment first
+    //         if (empty($data->attachment)) {
+    //             return '<span class="text-muted">No Attachment</span>';
+    //         }
 
-            // Get extension safely
-            $ext = pathinfo($data->attachment, PATHINFO_EXTENSION);
+    //         // Get extension safely
+    //         $ext = pathinfo($data->attachment, PATHINFO_EXTENSION);
 
-            // Build full public path (assuming storage:link exists)
-            $filePath = 'public/storage/file_attachments/' . $data->id.'.'.$ext;
+    //         // Build full public path (assuming storage:link exists)
+    //         $filePath = 'public/storage/file_attachments/' . $data->id.'.'.$ext;
 
-            // Return a proper download link
-            return "<a href='" . asset($filePath) . "' download>Download " . strtoupper($ext) . "</a>";
-        })
-        ->addColumn('observed_time', function($data){
-            // $obsValues = [
-            //     $data->obs_1,
-            //     $data->obs_2,
-            //     $data->obs_3,
-            //     $data->obs_4,
-            //     $data->obs_5
-            // ];
+    //         // Return a proper download link
+    //         return "<a href='" . asset($filePath) . "' download>Download " . strtoupper($ext) . "</a>";
+    //     })
+    //     ->addColumn('observed_time', function($data){
+    //         // $obsValues = [
+    //         //     $data->obs_1,
+    //         //     $data->obs_2,
+    //         //     $data->obs_3,
+    //         //     $data->obs_4,
+    //         //     $data->obs_5
+    //         // ];
 
-            // $filtered = array_filter($obsValues, function ($value) {
-            //     return $value !== null;
-            // });
+    //         // $filtered = array_filter($obsValues, function ($value) {
+    //         //     return $value !== null;
+    //         // });
 
-            // if(count($filtered) == 0){
-            //     $average = null;
-            //     return $average;
-            // }
+    //         // if(count($filtered) == 0){
+    //         //     $average = null;
+    //         //     return $average;
+    //         // }
 
-            // $average = array_sum($filtered) / count($filtered);
-            // // $data->observed_time = round($average, 2);
-            // $data->observed_time = $average;
-            // $round_up = round($average, 2);
+    //         // $average = array_sum($filtered) / count($filtered);
+    //         // // $data->observed_time = round($average, 2);
+    //         // $data->observed_time = $average;
+    //         // $round_up = round($average, 2);
 
-            // return $round_up;
-            return round($data->average_obs,2);
+    //         // return $round_up;
+    //         return round($data->average_obs,2);
 
-        })
-        ->addColumn('nt', function($data){
-            // $data->nt = null;
+    //     })
+    //     ->addColumn('nt', function($data){
+    //         // $data->nt = null;
 
-            // $result = $data->observed_time;
-            // $data->nt = $result;
-            // $round_up = round($result, 2);
-            // return $round_up;
-            return round($data->average_obs,2);
+    //         // $result = $data->observed_time;
+    //         // $data->nt = $result;
+    //         // $round_up = round($result, 2);
+    //         // return $round_up;
+    //         return round($data->average_obs,2);
 
-        })
-        ->addColumn('st', function($data){
-            // $data->st = null;
-            // if($data->nt === null){
-            //     return $data->st;
-            // }
-            // $st = $data->nt*(1+($data->allowance / 100));
-            // $round_up = round($st, 2);
-            // $data->st = $st;
-            // return $round_up;
-            return round($data->standard_time,2);
+    //     })
+    //     ->addColumn('st', function($data){
+    //         // $data->st = null;
+    //         // if($data->nt === null){
+    //         //     return $data->st;
+    //         // }
+    //         // $st = $data->nt*(1+($data->allowance / 100));
+    //         // $round_up = round($st, 2);
+    //         // $data->st = $st;
+    //         // return $round_up;
+    //         return round($data->standard_time,2);
 
-        })
-        ->addColumn('uph', function($data){
-            // $data->uph = null;
+    //     })
+    //     ->addColumn('uph', function($data){
+    //         // $data->uph = null;
 
-            // if($data->st === null){
-            //     return $data->uph;
-            // }
-            // $uph = 3600/$data->st;
-            // $round_up = round($uph, 2);
-            // $data->uph = $uph;
-            // return $round_up;
-            return round($data->uph_time,2);
+    //         // if($data->st === null){
+    //         //     return $data->uph;
+    //         // }
+    //         // $uph = 3600/$data->st;
+    //         // $round_up = round($uph, 2);
+    //         // $data->uph = $uph;
+    //         // return $round_up;
+    //         return round($data->uph_time,2);
             
-        })
-        ->addColumn('tact', function($data){
-            // $data->tact = null;
+    //     })
+    //     ->addColumn('tact', function($data){
+    //         // $data->tact = null;
 
-            // if($data->nt === null || $data->lb_no_operator === null){
-            //     return $data->tact;
-            // }
+    //         // if($data->nt === null || $data->lb_no_operator === null){
+    //         //     return $data->tact;
+    //         // }
 
-            // $tact = $data->nt / $data->lb_no_operator;
-            // $round_up = round($tact, 2);
-            // $data->tact = $tact;
-            // return $round_up;
-            return round($data->tact_time,2);
+    //         // $tact = $data->nt / $data->lb_no_operator;
+    //         // $round_up = round($tact, 2);
+    //         // $data->tact = $tact;
+    //         // return $round_up;
+    //         return round($data->tact_time,2);
 
-        })
-        ->addColumn('lb_uph', function($data){
-            // $data->lb_uph = null;
-            // if($data->tact === null){
-            //     return $data->lb_uph;
-            // }
-            // $lb_uph = 3600/$data->tact;
-            // $round_up = round($lb_uph, 2);
-            // $data->lb_uph = $lb_uph;
-            // return $round_up;
-            return round($data->lb_uph_time,2);
+    //     })
+    //     ->addColumn('lb_uph', function($data){
+    //         // $data->lb_uph = null;
+    //         // if($data->tact === null){
+    //         //     return $data->lb_uph;
+    //         // }
+    //         // $lb_uph = 3600/$data->tact;
+    //         // $round_up = round($lb_uph, 2);
+    //         // $data->lb_uph = $lb_uph;
+    //         // return $round_up;
+    //         return round($data->lb_uph_time,2);
 
-        })
-        ->rawColumns(['actions', 'attchmnt'])
-        ->make(true);
+    //     })
+    //     ->rawColumns(['actions', 'attchmnt'])
+    //     ->make(true);
+    // }
+
+    public function dtGetProcessForObservation(int $id)
+    {
+        $relations = ['rapidxUserDetails'];
+        $conditions = ['sat_header_id' => $id];
+
+        $sat_processes = $this->satProcessRepository
+            ->getWithRelationsConditions($relations, $conditions)
+            ->groupBy('process_name') // Group same process names
+            ->map(function ($group) {
+
+                $first = $group->first();
+
+                // $line_bal_no_operator = $group->sum('lb_no_operator');
+                // Build operator + observation list
+                $operators = collect($group)->map(function ($proc) {
+                    return [
+                        'operator' => $proc->operator_name,
+                        'obs_1' => $proc->obs_1,
+                        'obs_2' => $proc->obs_2,
+                        'obs_3' => $proc->obs_3,
+                        'obs_4' => $proc->obs_4,
+                        'obs_5' => $proc->obs_5,
+                    ];
+                })->values();
+
+                // Compute overall averages from all operators
+                $allObs = collect();
+                foreach ($group as $proc) {
+                    foreach (['obs_1','obs_2','obs_3','obs_4','obs_5'] as $field) {
+                        if (is_numeric($proc->$field)) {
+                            $allObs->push($proc->$field);
+                        }
+                    }
+                }
+
+                $overallAverage = $allObs->count() ? $allObs->avg() : 0;
+                // dd($overallAverage);
+                $allowance = (float) $first->allowance;
+                $standard_time = round($overallAverage, 2) * (1 + ($allowance / 100));
+                $uph_time = $standard_time > 0 ? 3600 / round($standard_time,2) : 0;
+
+                 // --- NEW: tact_time and lb_uph_time using lb_no_operator ---
+                // $lb_no_operator = isset($first->lb_no_operator) ? $group->sum('lb_no_operator') : null;
+                $lb_no_operator = isset($first->lb_no_operator) ? (float) $first->lb_no_operator : null;
+                $tact_time = null;
+                $lb_uph_time = null;
+
+                if ($overallAverage !== null && $lb_no_operator !== null && $lb_no_operator > 0) {
+                    $tact_time = $overallAverage / $lb_no_operator;
+                    if ($tact_time > 0) {
+                        $lb_uph_time = 3600 / $tact_time;
+                    }
+                }
+
+                return (object)[
+                    'id'             => $first->id,
+                    'process_name'   => $first->process_name,
+                    'allowance'      => $allowance,
+                    'attachment'     => $first->attachment,
+                    'average_obs'    => $overallAverage,
+                    'standard_time'  => $standard_time,
+                    'uph_time'       => $uph_time,
+                    'tact_time'      => $tact_time,
+                    'lb_uph_time'    => $lb_uph_time,
+                    'operators'      => $operators,
+                    // include lb_no_operator if you want it on frontend
+                    'lb_no_operator' => $lb_no_operator,
+                ];
+
+            })
+            ->values(); // reset array keys
+
+        return DataTables::of($sat_processes)
+            ->setRowId('id')
+            ->addColumn('actions', function($data){
+                return '
+                    <center>
+                        <button type="button" class="btn btn-sm btn-primary btnAddProcessObs" data-id="'.$data->id.'">
+                            <i class="fa-solid fa-pen"></i>
+                        </button>
+                        <div id="divButtonProcessObs" class="d-none">
+                            <button type="button" class="btn btn-sm btn-success btnSaveProcessObs" data-id="'.$data->id.'">
+                                <i class="fa-solid fa-check"></i>
+                            </button>
+                            <button type="button" class="btn btn-sm btn-danger ml-1 btnCancel" data-id="'.$data->id.'">
+                                <i class="fa-solid fa-xmark"></i>
+                            </button>
+                        </div>
+                    </center>
+                ';
+            })
+            ->addColumn('operator', function($data){
+                $html = '';
+                foreach ($data->operators as $op) {
+                    $html .= '
+                        <div class="border rounded p-1 mb-1 bg-light text-center">
+                            <strong>'.e($op['operator']).'</strong><br>
+                        </div>
+                    ';
+                }
+                
+                            // <small>['.$op['obs_1'].', '.$op['obs_2'].', '.$op['obs_3'].', '.$op['obs_4'].', '.$op['obs_5'].']</small>
+                return $html;
+            })
+            ->addColumn('attchmnt', function($data){
+                if (empty($data->attachment)) {
+                    return '<span class="text-muted">No Attachment</span>';
+                }
+                $ext = pathinfo($data->attachment, PATHINFO_EXTENSION);
+                $filePath = 'public/storage/file_attachments/'.$data->id.'.'.$ext;
+                return "<a href='".asset($filePath)."' download>Download ".strtoupper($ext)."</a>";
+            })
+            ->addColumn('obs1', function($data) { 
+                $html = '';
+                foreach ($data->operators as $op) {
+                    if (is_null($op['obs_1'])) {
+                        continue; // Skip null observations
+                    }
+                    $html .= '
+                        <div class="border rounded p-1 mb-1 bg-light text-center">
+                            <small>'.$op['obs_1'].'</small>
+                        </div>
+                    ';
+                }
+                return $html;
+             })
+            ->addColumn('obs2', function($data) { 
+                $html = '';
+                foreach ($data->operators as $op) {
+                    if (is_null($op['obs_2'])) {
+                        continue; // Skip null observations
+                    }
+                    $html .= '
+                        <div class="border rounded p-1 mb-1 bg-light text-center">
+                            <small>'.$op['obs_2'].'</small>
+                        </div>
+                    ';
+                }
+                return $html;
+             })
+            ->addColumn('obs3', function($data) { 
+                $html = '';
+                foreach ($data->operators as $op) {
+                    if (is_null($op['obs_3'])) {
+                        continue; // Skip null observations
+                    }
+                    $html .= '
+                        <div class="border rounded p-1 mb-1 bg-light text-center">
+                            <small>'.$op['obs_3'].'</small>
+                        </div>
+                    ';
+                }
+                return $html;
+             })
+            ->addColumn('obs4', function($data) { 
+                $html = '';
+                foreach ($data->operators as $op) {
+                    if (is_null($op['obs_4'])) {
+                        continue; // Skip null observations
+                    }
+                    $html .= '
+                        <div class="border rounded p-1 mb-1 bg-light text-center">
+                            <small>'.$op['obs_4'].'</small>
+                        </div>
+                    ';
+                }
+                return $html;
+             })
+            ->addColumn('obs5', function($data) { 
+                $html = '';
+                foreach ($data->operators as $op) {
+                    if (is_null($op['obs_5'])) {
+                        continue; // Skip null observations
+                    }
+                    $html .= '
+                        <div class="border rounded p-1 mb-1 bg-light text-center">
+                            <small>'.$op['obs_5'].'</small>
+                        </div>
+                    ';
+                }
+                return $html;
+             })
+            ->addColumn('observed_time', function($data){ return round($data->average_obs,2); })
+            ->addColumn('nt', function($data){ return round($data->average_obs,2); })
+            ->addColumn('st', function($data){ return round($data->standard_time,2); })
+            ->addColumn('uph', function($data){ return round($data->uph_time,2); })
+            ->addColumn('lb_no_operator', function($data){ return $data->lb_no_operator; })
+            ->addColumn('tact', function($data){ return $data->tact_time !== null ? round($data->tact_time, 2) : 0; })
+            ->addColumn('lb_uph', function($data){ return $data->lb_uph_time !== null ? round($data->lb_uph_time, 2) : 0; })
+            ->rawColumns(['actions','operator','attchmnt', 'obs1', 'obs2', 'obs3', 'obs4', 'obs5'])
+            ->make(true);
     }
-
     public function saveSatProcessObs(array $data){
         DB::beginTransaction();
         $file     = $data['attachment'];
@@ -421,22 +613,64 @@ class SATService implements SATServiceInterface
                 Storage::putFileAs('public/file_attachments', $file, $data['id'].".".$file->getClientOriginalExtension());
             }
 
-            $update_array = array(
-                'operator_name' => $data['operator'],
-                'attachment'    => $file_name,
-                'obs_1'         => $data['obs1'],
-                'obs_2'         => $data['obs2'],
-                'obs_3'         => $data['obs3'],
-                'obs_4'         => $data['obs4'],
-                'obs_5'         => $data['obs5'],
-                'updated_at'    => NOW(),
-                'updated_by'    => session('rapidx_id'),
-            );
-            $result = $this->satProcessRepository->update($update_array, $data['id']);
+            $observation_data = json_decode($data['observations'], true);
+
+            $original = $this->satProcessRepository->find($data['id']);
+             // 🔹 Loop through each observation
+
+            // return response()->json([
+            //     'observation_data' => $observation_data,
+            //     'original' => $original,
+            //     'data_id' => $data['id']
+            // ], 500);
+            foreach ($observation_data as $index => $obs) {
+                $update_array = [
+                    'operator_name' => $obs['operator'] ?? null,
+                    'attachment'    => $file_name,
+                    'obs_1'         => $obs['obs1'] == "" ? null : $obs['obs1'],
+                    'obs_2'         => $obs['obs2'] == "" ? null : $obs['obs2'],
+                    'obs_3'         => $obs['obs3'] == "" ? null : $obs['obs3'],
+                    'obs_4'         => $obs['obs4'] == "" ? null : $obs['obs4'],
+                    'obs_5'         => $obs['obs5'] == "" ? null : $obs['obs5'],
+                    'updated_at'    => now(),
+                    'updated_by'    => session('rapidx_id'),
+                ];
+
+                if ($index === 0) {
+                    // 🔸 Update the first record
+                    $result = $this->satProcessRepository->update($update_array, $data['id']);
+                } else {
+                    // 🔸 Copy the original and insert a new record
+                    $new = $original->replicate();
+                    foreach ($update_array as $key => $value) {
+                        $new->{$key} = $value;
+                    }
+                    $new->created_at = now();
+                    $new->updated_at = now();
+                    $new->created_by = session('rapidx_id');
+                    $new->updated_by = session('rapidx_id');
+                    $new->save();
+                }
+            }
+
+            // $update_array = array(
+            //     'operator_name' => $data['operator'],
+            //     'attachment'    => $file_name,
+            //     'obs_1'         => $data['obs1'],
+            //     'obs_2'         => $data['obs2'],
+            //     'obs_3'         => $data['obs3'],
+            //     'obs_4'         => $data['obs4'],
+            //     'obs_5'         => $data['obs5'],
+            //     'updated_at'    => NOW(),
+            //     'updated_by'    => session('rapidx_id'),
+            // );
+
+            // Code for multiple user
+            // $result = $this->satProcessRepository->update($update_array, $data['id']);
             DB::commit();
 
             return response()->json([
-                'result' => $result,
+                'result' => true,
             ]);
         }catch(Exemption $e){
             DB::rollback();

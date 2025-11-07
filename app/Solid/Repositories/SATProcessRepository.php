@@ -28,4 +28,12 @@ class SATProcessRepository implements SATProcessRepositoryInterface
     public function update(array $data, int $id){
         return SatProcess::where('id', $id)->update($data);
     }
+
+    public function updateWithConditions(array $data, array $conditions){
+        return SatProcess::whereConditions($conditions)->update($data);
+    }
+
+    public function find(int $id){
+        return SatProcess::find($id);
+    }
 }

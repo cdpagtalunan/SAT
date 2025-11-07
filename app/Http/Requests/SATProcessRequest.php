@@ -23,13 +23,14 @@ class SATProcessRequest extends FormRequest
      */
     public function rules()
     {
-        return [
-            'obs1' => 'nullable|numeric',
-            'obs2' => 'nullable|numeric',
-            'obs3' => 'nullable|numeric',
-            'obs4' => 'nullable|numeric',
-            'obs5' => 'nullable|numeric'
-        ];
+        return [];
+        // return [
+        //     'obs1' => 'nullable|numeric',
+        //     'obs2' => 'nullable|numeric',
+        //     'obs3' => 'nullable|numeric',
+        //     'obs4' => 'nullable|numeric',
+        //     'obs5' => 'nullable|numeric'
+        // ];
     }
 
     public function filterParameters()

@@ -9,6 +9,13 @@
         color: #aaa;
         font-style: italic;
     }
+    .select2-container {
+    z-index: 9999 !important;
+}
+.select2-dropdown {
+    z-index: 99999 !important;
+}
+
 </style>
 <div class="content-wrapper">
     <section class="content-header">
