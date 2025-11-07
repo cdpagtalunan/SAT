@@ -120,7 +120,7 @@ $(document).ready(function () {
             let rowNode = this.node();
             data.push( {
                 'satProcessId' : $(rowNode).attr('id'),
-                'noOfOperator'  : $(rowNode).find('td').eq(2).text()
+                'noOfOperator'  : $(rowNode).find('td').eq(2).text(),
             });
         });
 
@@ -145,48 +145,256 @@ $(document).ready(function () {
 /**
  * *Process Observation
  */
-$(document).on('click', '.btnAddProcessObs', function(e){
-     e.preventDefault();
+// $(document).on('click', '.btnAddProcessObs', function(e){
+//      e.preventDefault();
 
-    let row = $(this).closest('tr');
-    let cells = row.find('td');
-    let processId = $(this).data('id');
+//     let row = $(this).closest('tr');
+//     let cells = row.find('td');
+//     let processId = $(this).data('id');
     
-    let selectHtml = `
-        <select class="form-control form-control-sm w-auto select2bs5" id="selOperatorName">
-        </select>
-    `;
+//     let selectHtml = `
+//         <select class="form-control form-control-sm w-auto select2bs5" id="selOperatorName" name="operator[]" multiple="true">
+//         </select>
+//     `;
 
-    let attachmentHTML = `
-       <input type="file" id="observationAttchment" name="attachment">
-    `;
+//     let attachmentHTML = `
+//        <input type="file" id="observationAttchment" name="attachment" >
+//     `;
+//     cells.eq(2).html(attachmentHTML);
+//     cells.eq(3).html(selectHtml);
+//     cells.eq(3).find('select').select2({
+//         theme: 'bootstrap-5',
+//         width: '100%',
+//         // dropdownParent: cells.eq(3), // important if inside DataTables or modals
+//         dropdownParent: $('#modalDataSAT'),
+//         minimumResultsForSearch: 0
+//     });
+
+//     // Editable columns range: 3 to 7
+//     for (let i = 4; i <= 8; i++) {
+//         let cell = cells.eq(i);
+//         cell.attr('contenteditable', 'true');
+//         if (cell.text().trim() === '--') {
+//             cell.addClass('placeholder-cell')
+//                 .text('Enter value');
+//         }
+//     }
+
+//     $('#selOperatorName').html(operatorListSAT);
+
+//     // Show the process observation buttons
+//     row.find('#divButtonProcessObs').removeClass('d-none');
+//     $(this).addClass('d-none');
+
+// });
+
+// ! Another code Sample only
+// $(document).on('click', '.btnAddProcessObs', function(e) {
+//     e.preventDefault();
+
+//     let row = $(this).closest('tr');
+//     let cells = row.find('td');
+
+//     // Attachment input
+//     let attachmentHTML = `<input type="file" id="observationAttachment" name="attachment">`;
+//     cells.eq(2).html(attachmentHTML);
+
+//     // Operator multi-select
+//     let selectHtml = `
+//         <select class="form-control form-control-sm w-auto select2bs5 selOperatorName" name="operator[]" multiple="true">
+//         </select>
+//     `;
+//     cells.eq(3).html(selectHtml);
+//     let $select = cells.eq(3).find('select');
+//     $select.html(operatorListSAT);
+//     $select.select2({
+//         theme: 'bootstrap-5',
+//         width: '100%',
+//         dropdownParent: $('#modalDataSAT'),
+//         minimumResultsForSearch: 0
+//     });
+
+//     // Initial observation section
+//     updateObservationCells(row, []);
+
+//     // When operators are selected, re-render observation rows
+//     $select.on('change', function() {
+//         const selectedOperators = $(this).find('option:selected').map(function() {
+//             return $(this).text();
+//         }).get();
+
+//         updateObservationCells(row, selectedOperators);
+//     });
+
+//     row.find('#divButtonProcessObs').removeClass('d-none');
+//     $(this).addClass('d-none');
+// });
+
+// function updateObservationCells(row, operatorCount) {
+//     // Observation container: assuming starts at td index 4
+//     let obsContainer = row.find('td').eq(4);
+//     obsContainer.empty();
+
+//     // Get selected operators' names
+//     let selectedOperators = row.find('.selOperatorName option:selected').map(function() {
+//         return $(this).text();
+//     }).get();
+
+//     // if no operator selected, make one blank row
+//     if (selectedOperators.length === 0) {
+//         selectedOperators = [''];
+//     }
+
+//     // Build mini-table layout
+//     let tableHtml = `
+//         <table class="table table-bordered table-sm mb-0 text-center align-middle">
+//             <thead class="bg-light">
+//                 <tr>
+//                     <th style="min-width:100px;">Operator</th>
+//                     <th>1</th>
+//                     <th>2</th>
+//                     <th>3</th>
+//                     <th>4</th>
+//                     <th>5</th>
+//                 </tr>
+//             </thead>
+//             <tbody>
+//                 ${selectedOperators.map(op => `
+//                     <tr>
+//                         <td class="fw-semibold">${op}</td>
+//                         <td contenteditable="true"></td>
+//                         <td contenteditable="true"></td>
+//                         <td contenteditable="true"></td>
+//                         <td contenteditable="true"></td>
+//                         <td contenteditable="true"></td>
+//                     </tr>
+//                 `).join('')}
+//             </tbody>
+//         </table>
+//     `;
+
+//     obsContainer.html(tableHtml);
+// }
+
+// ! sample only
+$(document).on('click', '.btnAddProcessObs', function(e) {
+    e.preventDefault();
+
+    let $row = $(this).closest('tr');
+    let cells = $row.find('td');
+    let processId = $(this).data('id');
+
+    // Add attachment input
+    let attachmentHTML = `<input type="file" id="observationAttachment_${processId}" name="attachment">`;
     cells.eq(2).html(attachmentHTML);
+
+    // Add operator multi-select
+    let selectHtml = `
+        <select class="form-control form-control-sm w-auto select2bs5 selOperatorName" 
+                id="selOperatorName_${processId}" name="operator[]" multiple="true"></select>
+    `;
     cells.eq(3).html(selectHtml);
-    cells.eq(3).find('select').select2({
+
+    let $select = cells.eq(3).find('select');
+    $select.html(operatorListSAT);
+    $select.select2({
         theme: 'bootstrap-5',
         width: '100%',
-        // dropdownParent: cells.eq(3), // important if inside DataTables or modals
-        dropdownParent: $('#modalDataSAT'),
+        dropdownParent: $('#modalDataSAT .modal-content'),
         minimumResultsForSearch: 0
     });
 
-    // Editable columns range: 3 to 7
-    for (let i = 4; i <= 8; i++) {
-        let cell = cells.eq(i);
-        cell.attr('contenteditable', 'true');
-        if (cell.text().trim() === '--') {
-            cell.addClass('placeholder-cell')
-                .text('Enter value');
-        }
+  
+
+    // Handle operator selection → render observations
+    $select.on('change', function() {
+        const selectedOperators = $(this).find('option:selected').map(function() {
+            return $(this).text();
+        }).get();
+        renderObservationBlock($row, selectedOperators, processId);
+    });
+
+    // show save buttons
+    $row.find('#divButtonProcessObs').removeClass('d-none');
+    $(this).addClass('d-none');
+});
+
+
+
+// ✅ Renders operator observations INSIDE the observation columns (no new row)
+function renderObservationBlock($row, operators, processId) {
+    const obsStartIndex = 4; // first observation col index
+    const obsEndIndex = 9;   // last index (exclusive)
+
+    // Clear current observation cells
+    for (let i = obsStartIndex; i < obsEndIndex; i++) {
+        $row.find('td').eq(i).empty();
     }
 
-    $('#selOperatorName').html(operatorListSAT);
+    if (!operators.length) return;
 
-    // Show the process observation buttons
-    row.find('#divButtonProcessObs').removeClass('d-none');
-    $(this).addClass('d-none');
+    // Build bordered mini-layout inside observation columns
+    operators.forEach(op => {
+        for (let i = 0; i < 5; i++) {
+            const obsCell = $row.find('td').eq(4 + i);
+            let firstname = op.split(' ')[0];
+            const opBlock = `
+                <div class="border p-2 mb-1 rounded bg-light-subtle d-flex flex-column align-items-center operator-block" 
+                    data-operator="${op}" 
+                    style="box-sizing: border-box; min-width: 80px;">
+                <small class="fw-bold text-primary mb-1">${firstname}</small>
+                <input type="text" 
+                        class="form-control form-control-sm text-center obs-input" 
+                        data-operator="${op}" 
+                        data-index="${i + 1}" 
+                        placeholder="-" 
+                        style="max-width: 60px;">
+                </div>
+            `;
+            obsCell.append(opBlock);
+        }
+    });
+}
 
-});
+// Render bordered observation table (like your reference image)
+function renderObservationTable(row, operators) {
+    const obsWrapper = row.find('.observation-wrapper');
+    obsWrapper.empty();
+
+    if (operators.length === 0) {
+        obsWrapper.html('<em class="text-muted">Select operator(s) to enter observations</em>');
+        return;
+    }
+
+    let tableHtml = `
+        <table class="table table-bordered table-sm mb-0 border-dark align-middle text-center">
+            <thead class="bg-light">
+                <tr>
+                    <th>Operator</th>
+                    <th>1</th>
+                    <th>2</th>
+                    <th>3</th>
+                    <th>4</th>
+                    <th>5</th>
+                </tr>
+            </thead>
+            <tbody>
+                ${operators.map(op => `
+                    <tr data-operator="${op}">
+                        <td class="fw-bold">${op}</td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                        <td contenteditable="true"></td>
+                    </tr>
+                `).join('')}
+            </tbody>
+        </table>
+    `;
+
+    obsWrapper.html(tableHtml);
+}
 
 $(document).on('click', '.btnCancel', function(e){
    
@@ -212,57 +420,129 @@ $(document).on('click', '.btnCancel', function(e){
     row.find('#divButtonProcessObs').addClass('d-none');
 });
 
-$(document).on('click', '.btnSaveProcessObs', function(e){
+// $(document).on('click', '.btnSaveProcessObs', function(e){
+//     e.preventDefault();
+//     let formData = new FormData();
+
+//     let processId = $(this).data('id');
+//     let row = dtSatObservation.row($(this).closest('tr'));
+//     if($('#selOperatorName').val() == null){
+//         Swal.fire({
+//             title: 'Error!',
+//             text: 'Please select operator',
+//             icon: "error"
+//         });
+//         return
+//     }
+//     row.every(function (rowIdx, tableLoop, rowLoop) {
+//         let rowNode = this.node();
+        
+//         if($(rowNode).find('td').eq(3).html() == 'Enter value'){
+//             Swal.fire({
+//                 title: 'Error!',
+//                 text: 'Please enter observation',
+//                 icon: "error"
+//             });
+//             return
+//         }
+//         formData.append('id', processId);
+//         formData.append('attachment', $('#observationAttchment')[0].files ? $('#observationAttchment')[0].files[0] : '');
+//         formData.append('operator', $('#selOperatorName').val());
+
+//         formData.append('obs1', $(rowNode).find('td').eq(4).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(4).text());
+//         formData.append('obs2', $(rowNode).find('td').eq(5).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(5).text());
+//         formData.append('obs3', $(rowNode).find('td').eq(6).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(6).text());
+//         formData.append('obs4', $(rowNode).find('td').eq(7).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(7).text());
+//         formData.append('obs5', $(rowNode).find('td').eq(8).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(8).text());
+
+//         formData.append('_token', token);
+//     });
+
+//     // saveProcessObs(dataToSave);
+//     saveProcessObs(formData);
+// });
+
+// ! saving for  Another code Sample only
+// $(document).on('click', '.btnSaveProcessObs', async function(e) {
+//     e.preventDefault();
+
+//     let row = $(this).closest('tr');
+//     let processId = $(this).data('id');
+//     let formData = new FormData();
+
+//     // Selected operators
+//     let selectedOperators = row.find('.selOperatorName').val();
+//     if (!selectedOperators || selectedOperators.length === 0) {
+//         Swal.fire({
+//             title: 'Error!',
+//             text: 'Please select operator',
+//             icon: "error"
+//         });
+//         return;
+//     }
+
+//     // Get observation values
+//     let observations = [];
+//     row.find('td').eq(4).find('tbody tr').each(function() {
+//         let $tr = $(this);
+//         let operator = $tr.find('td').eq(0).text().trim();
+//         let values = [];
+//         $tr.find('td:gt(0)').each(function() {
+//             values.push($(this).text().trim());
+//         });
+//         observations.push({
+//             operator: operator,
+//             obs1: values[0] || '',
+//             obs2: values[1] || '',
+//             obs3: values[2] || '',
+//             obs4: values[3] || '',
+//             obs5: values[4] || ''
+//         });
+//     });
+
+//     formData.append('id', processId);
+//     formData.append('attachment', row.find('#observationAttchment')[0]?.files[0] || '');
+//     formData.append('observations', JSON.stringify(observations));
+//     formData.append('_token', token);
+
+//     console.log('Saving:', Object.fromEntries(formData.entries()));
+//     await saveProcessObs(formData);
+// });
+
+// ! saving for sample only
+$(document).on('click', '.btnSaveProcessObs', function(e) {
     e.preventDefault();
-    let formData = new FormData();
 
     let processId = $(this).data('id');
-    let row = dtSatObservation.row($(this).closest('tr'));
-    if($('#selOperatorName').val() == null){
-        Swal.fire({
-            title: 'Error!',
-            text: 'Please select operator',
-            icon: "error"
-        });
-        return
+    let $row = $(this).closest('tr');
+    let $select = $row.find(`#selOperatorName_${processId}`);
+    let formData = new FormData();
+
+    const selectedOperators = $select.val();
+    if (!selectedOperators || selectedOperators.length === 0) {
+        Swal.fire({ title: 'Error!', text: 'Please select operator', icon: 'error' });
+        return;
     }
-    row.every(function (rowIdx, tableLoop, rowLoop) {
-        let rowNode = this.node();
-        
-        if($(rowNode).find('td').eq(3).html() == 'Enter value'){
-            Swal.fire({
-                title: 'Error!',
-                text: 'Please enter observation',
-                icon: "error"
-            });
-            return
+
+    const attachmentInput = $row.find(`#observationAttachment_${processId}`)[0];
+    const observations = [];
+
+    // Loop through operators and gather their 5 observations
+    selectedOperators.forEach(op => {
+        const operatorObs = { operator: op };
+        for (let i = 1; i <= 5; i++) {
+            operatorObs[`obs${i}`] = 
+                $row.find(`.obs-input[data-operator="${op}"][data-index="${i}"]`).val()?.trim() || '';
         }
-        // dataToSave = {
-        //     id        : processId,
-        //     attachment: $('#observationAttchment').val(),
-        //     operator  : $('#selOperatorName').val(),
-        //     obs1      : $(rowNode).find('td').eq(4).html() == 'Enter value' ? '': $(rowNode).find('td').eq(4).html(),
-        //     obs2      : $(rowNode).find('td').eq(5).html() == 'Enter value' ? '': $(rowNode).find('td').eq(5).html(),
-        //     obs3      : $(rowNode).find('td').eq(6).html() == 'Enter value' ? '': $(rowNode).find('td').eq(6).html(),
-        //     obs4      : $(rowNode).find('td').eq(7).html() == 'Enter value' ? '': $(rowNode).find('td').eq(7).html(),
-        //     obs5      : $(rowNode).find('td').eq(8).html() == 'Enter value' ? '': $(rowNode).find('td').eq(8).html(),
-        //     _token    : token
-        // };
-
-        formData.append('id', processId);
-        formData.append('attachment', $('#observationAttchment')[0].files ? $('#observationAttchment')[0].files[0] : '');
-        formData.append('operator', $('#selOperatorName').val());
-
-        formData.append('obs1', $(rowNode).find('td').eq(4).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(4).text());
-        formData.append('obs2', $(rowNode).find('td').eq(5).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(5).text());
-        formData.append('obs3', $(rowNode).find('td').eq(6).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(6).text());
-        formData.append('obs4', $(rowNode).find('td').eq(7).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(7).text());
-        formData.append('obs5', $(rowNode).find('td').eq(8).text() == 'Enter value' ? '' : $(rowNode).find('td').eq(8).text());
-
-        formData.append('_token', token);
+        observations.push(operatorObs);
     });
 
-    // saveProcessObs(dataToSave);
+    // Add to FormData
+    formData.append('_token', token);
+    formData.append('id', processId);
+    formData.append('attachment', attachmentInput?.files?.[0] || '');
+    formData.append('observations', JSON.stringify(observations));
+
     saveProcessObs(formData);
 });
 
@@ -426,12 +706,18 @@ const drawProcessListTableForObservation = (satId) => {
             { "data" : "actions", orderable:false, searchable:false },
             { "data" : "process_name" },
             { "data" : "attchmnt" },
-            { "data" : "operator_name" },
-            { "data" : "obs_1" },
-            { "data" : "obs_2" },
-            { "data" : "obs_3" },
-            { "data" : "obs_4" },
-            { "data" : "obs_5" },
+            // { "data" : "operator_name" },
+            { "data" : "operator" },
+            // { "data" : "obs_1" },
+            // { "data" : "obs_2" },
+            // { "data" : "obs_3" },
+            // { "data" : "obs_4" },
+            // { "data" : "obs_5" },
+            { "data" : "obs1" },
+            { "data" : "obs2" },
+            { "data" : "obs3" },
+            { "data" : "obs4" },
+            { "data" : "obs5" },
             { "data" : "observed_time" },
             { "data" : "allowance" },
             { "data" : "nt" },
@@ -470,8 +756,8 @@ const drawProcessListTableForObservation = (satId) => {
     });//end of dataTableDevices
 }
 
-const saveProcessObs = (data) => {
-    $.ajax({
+const saveProcessObs = async (data) => {
+    await $.ajax({
         type: "POST",
         url: "save_process_obs",
         data: data,
@@ -575,39 +861,7 @@ const drawProcessListTableForLineBalance = (satId) => {
                         row.find('td').eq(3).text(tactDecimal);
                         uph = 3600/parseFloat(tactDecimal);
                         row.find('td').eq(4).text(uph.toFixed(2));
-
-                        // // Recalculate Total No. of Operators
-                        // let totalOperators = 0;
-                        // let highestTact = 0;
-                        // let completeTact = true;
-                        // $('#tableLineBalance tbody tr').each(function() {
-                        //     let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
-                        //     totalOperators += cellValue;
-
-                        //     if($(this).find('td').eq(3).text() == ''){
-                        //         completeTact = false;
-                        //         return;
-                        //     }
-                        //     let tactVal = parseFloat($(this).find('td').eq(3).text()) || 0;
-                        //     if (tactVal > highestTact) {
-                        //         highestTact = tactVal;
-                        //     }
-                        // });
-                        // let assySAT = 0;
-                        // let lineBalanceValue = 0;
-                        // let outputPerHour = 0;
-                        // // Calculate Assembly SAT and Line Balance Value if all tact is complete or doesnt have empty tact
-                        // if(completeTact){
-                        //     assySAT = highestTact * totalOperators;
-                        //     lineBalanceValue = (parseFloat($('#TtlStationSat').text()) / parseFloat(assySAT) ) * 100;
-                        //     outputPerHour = 3600 / highestTact;
-                            
-                        //     $('#txtLineBalVal').val(lineBalanceValue.toFixed(2))
-                        //     $('#txtLineBalAssySAT').val(assySAT.toFixed(2))
-                        //     $('#txtOutputPerHr').val(outputPerHour.toFixed(2))
-                        // }
-                        // $('#ttlNoOperator').text(totalOperators);
-
+                        
                         calculateLineBalance();
                     });
                 },
@@ -682,7 +936,7 @@ const getOperatorList = (cboElement) => {
         },
         success: function (response) {
             operatorListSAT = "";
-            operatorListSAT += `<option value="" selected disabled>--SELECT--</option>`;
+            // operatorListSAT += `<option value="" selected disabled>--SELECT--</option>`;
             operatorListSAT += `<option value="N/A">N/A</option>`;
             response.forEach(element => {
                 operatorListSAT += `<option value="${element.fullname}">${element.fullname}</option>`;
@@ -702,7 +956,7 @@ const calculateLineBalance = () => {
         let cellValue = parseFloat($(this).find('td').eq(2).text()) || 0;
         totalOperators += cellValue;
 
-        if($(this).find('td').eq(3).text() == ''){
+        if($(this).find('td').eq(3).text() == '' || $(this).find('td').eq(3).text() == 0){
             completeTact = false;
             return;
         }
@@ -715,6 +969,7 @@ const calculateLineBalance = () => {
     let lineBalanceValue = 0;
     let outputPerHour = 0;
     // Calculate Assembly SAT and Line Balance Value if all tact is complete or doesnt have empty tact
+    console.log('completeTact', completeTact);
     if(completeTact){
         assySAT = highestTact * totalOperators;
         lineBalanceValue = (parseFloat($('#TtlStationSat').text()) / parseFloat(assySAT) ) * 100;

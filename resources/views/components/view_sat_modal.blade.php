@@ -63,7 +63,8 @@
                                         id="tableViewSATObservation">
                                         <thead>
                                             <tr>
-                                                <th rowspan="2">Action</th>
+                                                {{-- <th rowspan="2">Action</th> --}}
+                                                <th rowspan="2">Attachment</th>
                                                 <th rowspan="2">Process</th>
                                                 <th rowspan="2">Operator</th>
                                                 <th colspan="5" class="text-center">Observation (sec. per cycle-unit)

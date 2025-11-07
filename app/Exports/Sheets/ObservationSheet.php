@@ -58,7 +58,7 @@ class ObservationSheet implements FromView, ShouldAutoSize, WithEvents, WithTitl
         $drawing = new Drawing();
         $drawing->setName('Logo');
         $drawing->setDescription('This is my logo');
-        $drawing->setPath(public_path('storage/image/pricon.png'));
+        $drawing->setPath(public_path('pricon.png'));
         $drawing->setHeight(40);
         $drawing->setCoordinates('B2');
 
@@ -192,41 +192,89 @@ class ObservationSheet implements FromView, ShouldAutoSize, WithEvents, WithTitl
                 $sheet->getStyle('B8')->applyFromArray($center_align);
                 $sheet->getStyle('B8')->applyFromArray($header);
 
-
                 $start_row = 11;
                 $initial = 11;
                 $ctr = 1;
-                foreach ($sat->satProcessDetails as $key => $value) {
-                    $sheet->setCellValue('B' . $start_row, $ctr);
-                    $sheet->setCellValue('C' . $start_row, $value->process_name);
-                    $sheet->setCellValue('D' . $start_row, $value->operator_name);
-                    $sheet->setCellValue('E' . $start_row, $value->obs_1);
-                    $sheet->setCellValue('F' . $start_row, $value->obs_2);
-                    $sheet->setCellValue('G' . $start_row, $value->obs_3);
-                    $sheet->setCellValue('H' . $start_row, $value->obs_4);
-                    $sheet->setCellValue('I' . $start_row, $value->obs_5);
-                    $sheet->setCellValue('J' .$start_row, '=IF(E' .$start_row.'="","",AVERAGE(E' .$start_row. ':I' .$start_row. '))');
-                    $sheet->getStyle('J' . $start_row)->getNumberFormat()->setFormatCode('0.00');
-                    $sheet->setCellValue('K' . $start_row, $value->allowance / 100);
-                    $sheet->getStyle('K' . $start_row)->getNumberFormat()->setFormatCode('0.00%');
-                    $sheet->setCellValue('L' . $start_row, '=J' .$start_row);
-                    $sheet->setCellValue('M' . $start_row, '=IF(J' .$start_row.'="","",L' .$start_row.'*(1+K' .$start_row. '))');
-                    $sheet->setCellValue('N' . $start_row, '=IF(M' .$start_row.'="","",3600/M' .$start_row. ')');
 
-                    $sheet->getStyle('L' . $start_row.':N' . $start_row)->getNumberFormat()->setFormatCode('0.00');
+                foreach ($sat->satProcessDetails as $process) {
+
+                    $operatorCount = count($process->operators);
+                    $firstRow = $start_row;
+                    $lastRow = $start_row + $operatorCount - 1;
+
+                    foreach ($process->operators as $op) {
+                        $sheet->setCellValue('B' . $start_row, $ctr);
+                        $sheet->setCellValue('C' . $start_row, $process->process_name);
+                        $sheet->setCellValue('D' . $start_row, $op['operator']);
+                        $sheet->setCellValue('E' . $start_row, $op['obs_1']);
+                        $sheet->setCellValue('F' . $start_row, $op['obs_2']);
+                        $sheet->setCellValue('G' . $start_row, $op['obs_3']);
+                        $sheet->setCellValue('H' . $start_row, $op['obs_4']);
+                        $sheet->setCellValue('I' . $start_row, $op['obs_5']);
+
+                        $start_row++;
+                    }
+
+                    // merge cells for the computed columns
+                    $sheet->mergeCells("B{$firstRow}:B{$lastRow}");
+                    $sheet->mergeCells("C{$firstRow}:C{$lastRow}");
+                    $sheet->mergeCells("J{$firstRow}:J{$lastRow}");
+                    $sheet->mergeCells("K{$firstRow}:K{$lastRow}");
+                    $sheet->mergeCells("L{$firstRow}:L{$lastRow}");
+                    $sheet->mergeCells("M{$firstRow}:M{$lastRow}");
+                    $sheet->mergeCells("N{$firstRow}:N{$lastRow}");
+
+                    // set merged values once (top row)
+                    $sheet->setCellValue("J{$firstRow}", round($process->average_obs, 2));
+                    $sheet->getStyle("J{$firstRow}")->getNumberFormat()->setFormatCode('0.00');
+
+                    $sheet->setCellValue("K{$firstRow}", $process->allowance / 100);
+                    $sheet->getStyle("K{$firstRow}")->getNumberFormat()->setFormatCode('0.00%');
+
+                    $sheet->setCellValue("L{$firstRow}", round($process->average_obs, 2));
+                    $sheet->setCellValue("M{$firstRow}", round($process->standard_time, 2));
+                    $sheet->setCellValue("N{$firstRow}", round($process->uph_time, 2));
+                    $sheet->getStyle("L{$firstRow}:N{$firstRow}")->getNumberFormat()->setFormatCode('0.00');
+
                     $ctr++;
-                    $start_row++;
                 }
-                $sheet->getStyle("C{$initial}:C{$sheet->getHighestRow()}")->getAlignment()->setWrapText(true);
-                $sheet->getStyle("B{$initial}:N{$sheet->getHighestRow()}")->applyFromArray($center_align);
-                $sheet->setCellValue('B' . $start_row, "Total");
-                $sheet->mergeCells("B{$start_row}:K" . ($start_row));
-                $sheet->getStyle("B{$start_row}:K{$start_row}")->applyFromArray($right_align);
-                $sheet->setCellValue('L' . $start_row, "=SUM(L{$initial}:L" . ($start_row - 1) . ")");
-                $sheet->setCellValue('M' . $start_row, "=SUM(M{$initial}:M" . ($start_row - 1) . ")");
+                // $start_row = 11;
+                // $initial = 11;
+                // $ctr = 1;
+                // foreach ($sat->satProcessDetails as $key => $value) {
+                //     $sheet->setCellValue('B' . $start_row, $ctr);
+                //     $sheet->setCellValue('C' . $start_row, $value->process_name);
+                //     $sheet->setCellValue('D' . $start_row, $value->operator_name);
+                //     $sheet->setCellValue('E' . $start_row, $value->obs_1);
+                //     $sheet->setCellValue('F' . $start_row, $value->obs_2);
+                //     $sheet->setCellValue('G' . $start_row, $value->obs_3);
+                //     $sheet->setCellValue('H' . $start_row, $value->obs_4);
+                //     $sheet->setCellValue('I' . $start_row, $value->obs_5);
+                //     $sheet->setCellValue('J' .$start_row, '=IF(E' .$start_row.'="","",AVERAGE(E' .$start_row. ':I' .$start_row. '))');
+                //     $sheet->getStyle('J' . $start_row)->getNumberFormat()->setFormatCode('0.00');
+                //     $sheet->setCellValue('K' . $start_row, $value->allowance / 100);
+                //     $sheet->getStyle('K' . $start_row)->getNumberFormat()->setFormatCode('0.00%');
+                //     $sheet->setCellValue('L' . $start_row, '=J' .$start_row);
+                //     $sheet->setCellValue('M' . $start_row, '=IF(J' .$start_row.'="","",L' .$start_row.'*(1+K' .$start_row. '))');
+                //     $sheet->setCellValue('N' . $start_row, '=IF(M' .$start_row.'="","",3600/M' .$start_row. ')');
+
+                //     $sheet->getStyle('L' . $start_row.':N' . $start_row)->getNumberFormat()->setFormatCode('0.00');
+                //     $ctr++;
+                //     $start_row++;
+                // }
+                // $sheet->getStyle("C{$initial}:C{$sheet->getHighestRow()}")->getAlignment()->setWrapText(true);
+                // $sheet->getStyle("B{$initial}:N{$sheet->getHighestRow()}")->applyFromArray($center_align);
+                // $sheet->setCellValue('B' . $start_row, "Total");
+                // $sheet->mergeCells("B{$start_row}:K" . ($start_row));
+                // $sheet->getStyle("B{$start_row}:K{$start_row}")->applyFromArray($right_align);
+                // $sheet->setCellValue('L' . $start_row, "=SUM(L{$initial}:L" . ($start_row - 1) . ")");
+                // $sheet->setCellValue('M' . $start_row, "=SUM(M{$initial}:M" . ($start_row - 1) . ")");
                 $sheet->getStyle("L{$start_row}:M{$start_row}")->applyFromArray($center_align);
                 $sheet->getStyle("B{$start_row}:M{$start_row}")->applyFromArray($header);
                 $sheet->getStyle("B9:N{$sheet->getHighestRow()}")->applyFromArray($border);
+                $sheet->getStyle("B8:N{$sheet->getHighestRow()}")->applyFromArray($center_align);
+                $sheet->getStyle("B8:N{$sheet->getHighestRow()}")->getAlignment()->setWrapText(true);
+
                 $signatories_initial = $sheet->getHighestRow();
 
                 $signatories_start = $sheet->getHighestRow()+2;

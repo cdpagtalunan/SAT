@@ -7,4 +7,6 @@ interface SATProcessRepositoryInterface
     public function delete(array $conditions);
     public function getWithRelationsConditions(array $relations, array $conditions);
     public function update(array $data, int $id);
+    public function updateWithConditions(array $data, array $conditions);
+    public function find(int $id);
 }

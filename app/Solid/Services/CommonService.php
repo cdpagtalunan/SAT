@@ -18,7 +18,7 @@ class CommonService implements CommonServiceInterface
     {
         $conditions = array(
             'empStatus' => 1, // Active
-            'fkPosition' => 43, // Operator
+            // 'fkPosition' => 43, // Operator
         );
         $hris =  $this->systemoneRepository->getHRIS($conditions);
 

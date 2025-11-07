@@ -15,6 +15,10 @@ class SatHeader extends Model
         return $this->hasMany(SatProcess::class, 'sat_header_id', 'id');
     }
 
+    public function sat_details_process(){
+        return $this->hasMany(SatProcess::class, 'sat_header_id', 'id');
+    }
+
     public function approverDetails(){
         return $this->hasOne(SatApproval::class, 'sat_header_id', 'id');
     }
