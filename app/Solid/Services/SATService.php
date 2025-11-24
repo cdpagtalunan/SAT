@@ -603,6 +603,7 @@ class SATService implements SATServiceInterface
             ->make(true);
     }
     public function saveSatProcessObs(array $data){
+
         DB::beginTransaction();
         $file     = $data['attachment'];
         $file_name = null;
@@ -624,6 +625,7 @@ class SATService implements SATServiceInterface
             //     'data_id' => $data['id']
             // ], 500);
             foreach ($observation_data as $index => $obs) {
+
                 $update_array = [
                     'operator_name' => $obs['operator'] ?? null,
                     'attachment'    => $file_name,
@@ -640,7 +642,15 @@ class SATService implements SATServiceInterface
                     // 🔸 Update the first record
                     $result = $this->satProcessRepository->update($update_array, $data['id']);
                 } else {
+
                     // 🔸 Copy the original and insert a new record
+
+                    $delete_array = array(
+                        '<>:id' => $data['id'],
+                        'sat_header_id' => $original->sat_header_id,
+                        'process_name' => $original->process_name
+                    );
+                    $this->satProcessRepository->delete($delete_array);
                     $new = $original->replicate();
                     foreach ($update_array as $key => $value) {
                         $new->{$key} = $value;

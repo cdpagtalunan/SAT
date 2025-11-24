@@ -31,9 +31,51 @@ class SatProcess extends Model
         return $this->belongsTo(SatHeader::class, 'sat_header_id');
     }
 
-    public function scopeWhereConditions($query, $conditions){
-        foreach ($conditions as $key => $value) {
-            $query->where($key, $value);
+    // public function scopeWhereConditions($query, $conditions){
+    //     foreach ($conditions as $key => $value) {
+    //         $query->where($key, $value);
+    //     }
+    // }
+    
+
+    /**
+     * Apply dynamic where conditions.
+     *
+     * Supported shorthand keys:
+     * - LIKE:columnName   => performs a LIKE '%value%' on columnName
+     * - IN:columnName     => performs a WHERE IN on columnName (value should be array or comma-separated)
+     * - NOTIN:columnName  => performs a WHERE NOT IN on columnName
+     * - >:columnName      => uses '>' operator on columnName
+     * - <:columnName      => uses '<' operator on columnName
+     * - >=:columnName     => uses '>=' operator on columnName
+     * - <=:columnName     => uses '<=' operator on columnName
+     *
+     * @param \Illuminate\Database\Eloquent\Builder $query
+     * @param array $condition Conditions to apply to the query.
+     */
+    public function ScopeWhereConditions($query, $condition){
+        foreach ($condition as $key => $value) {
+            if (strpos($key, ':') !== false) {
+                [$operator, $field] = explode(':', $key, 2);
+                $operator = trim($operator);
+                switch ($operator) {
+                    case 'IN':
+                        $query->whereIn($field, (array) $value);
+                        break;
+                    case 'NOTIN':
+                        $query->whereNotIn($field, (array) $value);
+                        break;
+                    case 'LIKE':
+                        $query->where($field, 'LIKE', "%{$value}%");
+                        break;
+                    default:
+                        $query->where($field, $operator, $value);
+                        break;
+                }
+            }
+            else{
+                $query->where($key, $value);
+            }
         }
     }
 
