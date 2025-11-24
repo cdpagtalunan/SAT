@@ -301,7 +301,8 @@ $(document).on('click', '.btnAddProcessObs', function(e) {
         theme: 'bootstrap-5',
         width: '100%',
         dropdownParent: $('#modalDataSAT .modal-content'),
-        minimumResultsForSearch: 0
+        minimumResultsForSearch: 0,
+        tags: true,
     });
 
   
