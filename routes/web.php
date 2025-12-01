@@ -68,6 +68,7 @@ Route::middleware('verifySession')->group(function(){
         Route::get('/dt_get_process_for_line_balance', 'dtGetProcessForObservation')->name('dt_get_process_for_line_balance');
         Route::post('/save_line_balance', 'saveLineBalance')->name('save_line_balance');
         Route::post('/proceed_for_approval', 'proceedForApproval')->name('proceed_for_approval');
+        Route::post('/revert_to_observation', 'revertToObservation')->name('revert_to_observation');
     });
 
     Route::controller(CommonController::class)->group(function(){

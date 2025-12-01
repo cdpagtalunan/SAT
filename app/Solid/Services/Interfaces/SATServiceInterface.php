@@ -11,4 +11,5 @@ interface SATServiceInterface
     public function saveSatProcessObs(array $id);
     public function doneObs(array $data);
     public function proceedApproval(int $id);
+    public function revertToObservation(int $id);
 }

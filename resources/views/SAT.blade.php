@@ -623,5 +623,45 @@
         let satId = $(this).data('id');
         window.open("{{ route('export_sat') }}?id=" + satId, '_blank');
     })
+
+    $(document).on('click', '.btnRevertObservation', function(){
+        let satId = $(this).data('id');
+        Swal.fire({
+            title: "Do you want to revert to observation?",
+            text: "The SAT will be sent back to observation status.",
+            icon: 'warning',
+            showCancelButton: true,
+            confirmButtonText: "Yes, Revert",
+        }).then((result) => {
+            if (result.isConfirmed) {
+                $.ajax({
+                    type: "POST",
+                    url: "{{ route('revert_to_observation') }}",
+                    data: {
+                        _token: "{{ csrf_token() }}",
+                        id: satId
+                    },
+                    dataType: "json",
+                    beforeSend: function () {
+                        $(this).prop('disabled', true);
+                    },
+                    success: function (response) {
+                        if (!response.result) {
+                            toastr.error('Revert failed! Please try again.')
+                            return;
+                        }
+                        dtSat.draw();
+                        toastr.success(response.msg);
+                        $(this).prop('disabled', false);
+
+                    },
+                    error: function (xhr, status, error) {
+                        $(this).prop('disabled', false);
+                        console.log('xhr: ' + xhr + "\n" + "status: " + status + "\n" + "error: " + error);
+                    }
+                });
+            }
+        })
+    })
 </script>
 @endsection
