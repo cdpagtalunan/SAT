@@ -73,4 +73,8 @@ class SATController extends Controller
     public function proceedForApproval(Request $request){
         return $this->satService->proceedApproval($request->sat_id);
     }
+
+    public function revertToObservation(Request $request){
+        return $this->satService->revertToObservation($request->id);
+    }
 }

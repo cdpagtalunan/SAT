@@ -153,6 +153,7 @@ class SATService implements SATServiceInterface
                     if($collections == 0){
                         $result .= "<button class='btn btn-sm btn-success btnDoneLineBal ml-1' data-id='{$data->id}' title='Proceed Approval'><i class='fa-solid fa-check'></i></button>";
                     }
+                    $result .= "<button class='btn btn-sm btn-danger ml-1 btnRevertObservation' title='Send Back to Observation' data-id='{$data->id}'><i class='fa-solid fa-times'></i></button>";
                     break;
                 case 4:
                     $result .= "<button class='btn btn-info btn-sm btnSeeDetail' data-id='{$data->id}' 
@@ -743,6 +744,25 @@ class SATService implements SATServiceInterface
         }catch(Exception $e){
             DB::rollback();
             return $e; 
+        }
+    }
+
+    public function revertToObservation(int $id){
+        DB::beginTransaction();
+        try{
+            $header_array = array(
+                'status' => 1,
+                'updated_by' => session('rapidx_id')
+            );
+            $result = $this->satHeaderRepository->update($header_array, $id);
+            DB::commit();
+            return response()->json([
+                'result' => $result,
+                'msg' => 'Transaction Success!'
+            ]);
+        }catch(Exemption $e){
+            DB::rollback();
+            return $e;
         }
     }
 } 
